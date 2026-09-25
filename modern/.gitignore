@@ -1,0 +1,10 @@
+/core/target/
+/build/
+/dist/
+/test-output/
+*.user
+*.sqlite*
+.sn-index/
+
+/dependencies/
+__pycache__/

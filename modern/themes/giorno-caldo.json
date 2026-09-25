@@ -1,0 +1,12 @@
+{
+  "name": "Giorno caldo",
+  "background": "#FFF8EE",
+  "foreground": "#302B25",
+  "panel": "#F2E9DC",
+  "muted": "#60564B",
+  "accent": "#005A70",
+  "keyword": "#6C3483",
+  "string": "#386324",
+  "comment": "#60564B",
+  "number": "#8B3A14"
+}

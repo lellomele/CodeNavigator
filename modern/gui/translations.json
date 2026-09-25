@@ -1,0 +1,1097 @@
+{
+  "File": {
+    "en": "File",
+    "fr": "Fichier",
+    "de": "Datei"
+  },
+  "Visualizza": {
+    "en": "View",
+    "fr": "Affichage",
+    "de": "Ansicht"
+  },
+  "Preferenze": {
+    "en": "Preferences",
+    "fr": "Préférences",
+    "de": "Einstellungen"
+  },
+  "Strumenti": {
+    "en": "Tools",
+    "fr": "Outils",
+    "de": "Werkzeuge"
+  },
+  "Guida": {
+    "en": "Help",
+    "fr": "Aide",
+    "de": "Hilfe"
+  },
+  "Nuovo progetto…": {
+    "en": "New project…",
+    "fr": "Nouveau projet…",
+    "de": "Neues Projekt…"
+  },
+  "Apri progetto…": {
+    "en": "Open project…",
+    "fr": "Ouvrir un projet…",
+    "de": "Projekt öffnen…"
+  },
+  "Apri file…": {
+    "en": "Open file…",
+    "fr": "Ouvrir un fichier…",
+    "de": "Datei öffnen…"
+  },
+  "Apri file": {
+    "en": "Open file",
+    "fr": "Ouvrir un fichier",
+    "de": "Datei öffnen"
+  },
+  "Salva": {
+    "en": "Save",
+    "fr": "Enregistrer",
+    "de": "Speichern"
+  },
+  "Salva con nome…": {
+    "en": "Save as…",
+    "fr": "Enregistrer sous…",
+    "de": "Speichern unter…"
+  },
+  "Salva con nome": {
+    "en": "Save as",
+    "fr": "Enregistrer sous",
+    "de": "Speichern unter"
+  },
+  "Salva tutti": {
+    "en": "Save all",
+    "fr": "Tout enregistrer",
+    "de": "Alle speichern"
+  },
+  "Chiudi file": {
+    "en": "Close file",
+    "fr": "Fermer le fichier",
+    "de": "Datei schließen"
+  },
+  "Chiudi progetto": {
+    "en": "Close project",
+    "fr": "Fermer le projet",
+    "de": "Projekt schließen"
+  },
+  "Esci": {
+    "en": "Exit",
+    "fr": "Quitter",
+    "de": "Beenden"
+  },
+  "Stampa corrispondenze…": {
+    "en": "Print matches…",
+    "fr": "Imprimer les correspondances…",
+    "de": "Treffer drucken…"
+  },
+  "Stampa corrispondenze": {
+    "en": "Print matches",
+    "fr": "Imprimer les correspondances",
+    "de": "Treffer drucken"
+  },
+  "Stampa…": {
+    "en": "Print…",
+    "fr": "Imprimer…",
+    "de": "Drucken…"
+  },
+  "Anteprima sostituzione": {
+    "en": "Replacement preview",
+    "fr": "Aperçu du remplacement",
+    "de": "Ersetzungsvorschau"
+  },
+  "Anteprima": {
+    "en": "Preview",
+    "fr": "Aperçu",
+    "de": "Vorschau"
+  },
+  "Prima": {
+    "en": "Before",
+    "fr": "Avant",
+    "de": "Vorher"
+  },
+  "Dopo": {
+    "en": "After",
+    "fr": "Après",
+    "de": "Nachher"
+  },
+  "Riga": {
+    "en": "Line",
+    "fr": "Ligne",
+    "de": "Zeile"
+  },
+  "File / riga": {
+    "en": "File / line",
+    "fr": "Fichier / ligne",
+    "de": "Datei / Zeile"
+  },
+  "Lingua": {
+    "en": "Language",
+    "fr": "Langue",
+    "de": "Sprache"
+  },
+  "La lingua selezionata sarà applicata al prossimo avvio.": {
+    "en": "The selected language will apply at the next launch.",
+    "fr": "La langue choisie sera appliquée au prochain démarrage.",
+    "de": "Die gewählte Sprache wird beim nächsten Start angewendet."
+  },
+  "Riapri ultimo progetto all’avvio": {
+    "en": "Reopen last project at startup",
+    "fr": "Rouvrir le dernier projet au démarrage",
+    "de": "Letztes Projekt beim Start öffnen"
+  },
+  "Informazioni su…": {
+    "en": "About…",
+    "fr": "À propos…",
+    "de": "Über…"
+  },
+  "Informazioni su Source Navigator": {
+    "en": "About Source Navigator",
+    "fr": "À propos de Source Navigator",
+    "de": "Über Source Navigator"
+  },
+  "Riferimenti incrociati…": {
+    "en": "Cross-references…",
+    "fr": "Références croisées…",
+    "de": "Querverweise…"
+  },
+  "Riferimenti incrociati": {
+    "en": "Cross-references",
+    "fr": "Références croisées",
+    "de": "Querverweise"
+  },
+  "Apri prima un progetto.": {
+    "en": "Open a project first.",
+    "fr": "Ouvrez d’abord un projet.",
+    "de": "Öffnen Sie zuerst ein Projekt."
+  },
+  "Nome esatto del simbolo o dipendenza": {
+    "en": "Exact symbol or dependency name",
+    "fr": "Nom exact du symbole ou de la dépendance",
+    "de": "Genauer Symbol- oder Abhängigkeitsname"
+  },
+  "Tutte le relazioni": {
+    "en": "All relationships",
+    "fr": "Toutes les relations",
+    "de": "Alle Beziehungen"
+  },
+  "Chiamate": {
+    "en": "Calls",
+    "fr": "Appels",
+    "de": "Aufrufe"
+  },
+  "Dichiarazioni": {
+    "en": "Declarations",
+    "fr": "Déclarations",
+    "de": "Deklarationen"
+  },
+  "Letture": {
+    "en": "Reads",
+    "fr": "Lectures",
+    "de": "Lesezugriffe"
+  },
+  "Scritture": {
+    "en": "Writes",
+    "fr": "Écritures",
+    "de": "Schreibzugriffe"
+  },
+  "Ereditarietà / interfacce": {
+    "en": "Inheritance / interfaces",
+    "fr": "Héritage / interfaces",
+    "de": "Vererbung / Schnittstellen"
+  },
+  "Dipendenze dei file": {
+    "en": "File dependencies",
+    "fr": "Dépendances des fichiers",
+    "de": "Dateiabhängigkeiten"
+  },
+  "Verso il simbolo": {
+    "en": "To the symbol",
+    "fr": "Vers le symbole",
+    "de": "Zum Symbol"
+  },
+  "Dal simbolo": {
+    "en": "From the symbol",
+    "fr": "Depuis le symbole",
+    "de": "Vom Symbol"
+  },
+  "Origine": {
+    "en": "Source",
+    "fr": "Origine",
+    "de": "Quelle"
+  },
+  "Destinazione": {
+    "en": "Target",
+    "fr": "Cible",
+    "de": "Ziel"
+  },
+  "Relazione": {
+    "en": "Relationship",
+    "fr": "Relation",
+    "de": "Beziehung"
+  },
+  "Stato": {
+    "en": "Status",
+    "fr": "État",
+    "de": "Status"
+  },
+  "Sintattico": {
+    "en": "Syntactic",
+    "fr": "Syntaxique",
+    "de": "Syntaktisch"
+  },
+  "Indice precedente": {
+    "en": "Previous index",
+    "fr": "Index précédent",
+    "de": "Vorheriger Index"
+  },
+  "%1 riferimenti": {
+    "en": "%1 references",
+    "fr": "%1 références",
+    "de": "%1 Verweise"
+  },
+  " · risultati parziali": {
+    "en": " · partial results",
+    "fr": " · résultats partiels",
+    "de": " · unvollständige Ergebnisse"
+  },
+  "Cerca riferimenti": {
+    "en": "Find references",
+    "fr": "Rechercher les références",
+    "de": "Verweise suchen"
+  },
+  "Ricerca riferimenti…": {
+    "en": "Searching references…",
+    "fr": "Recherche des références…",
+    "de": "Verweise werden gesucht…"
+  },
+  "Filtro percorso, es. src/*": {
+    "en": "Path filter, e.g. src/*",
+    "fr": "Filtre de chemin, ex. src/*",
+    "de": "Pfadfilter, z. B. src/*"
+  },
+  "Tempo limite superato": {
+    "en": "Time limit exceeded",
+    "fr": "Délai dépassé",
+    "de": "Zeitlimit überschritten"
+  },
+  "Impossibile leggere i riferimenti. Aggiorna l’indice con F5.": {
+    "en": "Cannot read references. Update the index with F5.",
+    "fr": "Impossible de lire les références. Actualisez l’index avec F5.",
+    "de": "Verweise können nicht gelesen werden. Index mit F5 aktualisieren."
+  },
+  "PROGETTO": {
+    "en": "PROJECT",
+    "fr": "PROJET",
+    "de": "PROJEKT"
+  },
+  "CERCA & SOSTITUISCI": {
+    "en": "FIND & REPLACE",
+    "fr": "RECHERCHER ET REMPLACER",
+    "de": "SUCHEN UND ERSETZEN"
+  },
+  "Esplora il codice. Trova ciò che serve. Modifica con controllo.": {
+    "en": "Explore code. Find what you need. Review your edits.",
+    "fr": "Explorez le code. Trouvez l’essentiel. Contrôlez vos modifications.",
+    "de": "Code erkunden. Gezielt suchen. Änderungen prüfen."
+  },
+  "Aggiorna indice": {
+    "en": "Update index",
+    "fr": "Actualiser l’index",
+    "de": "Index aktualisieren"
+  },
+  "Interrompi": {
+    "en": "Stop",
+    "fr": "Interrompre",
+    "de": "Abbrechen"
+  },
+  "Tipi di file…": {
+    "en": "File types…",
+    "fr": "Types de fichiers…",
+    "de": "Dateitypen…"
+  },
+  "Cerca nel progetto…  Ctrl+Shift+F": {
+    "en": "Search project…  Ctrl+Shift+F",
+    "fr": "Rechercher dans le projet…  Ctrl+Shift+F",
+    "de": "Projekt durchsuchen…  Ctrl+Shift+F"
+  },
+  "Testo": {
+    "en": "Text",
+    "fr": "Texte",
+    "de": "Text"
+  },
+  "Nei file": {
+    "en": "In files",
+    "fr": "Dans les fichiers",
+    "de": "In Dateien"
+  },
+  "Nei simboli": {
+    "en": "In symbols",
+    "fr": "Dans les symboles",
+    "de": "In Symbolen"
+  },
+  "Distingui maiuscole e minuscole": {
+    "en": "Case sensitive",
+    "fr": "Respecter la casse",
+    "de": "Groß-/Kleinschreibung beachten"
+  },
+  "Parole intere": {
+    "en": "Whole words",
+    "fr": "Mots entiers",
+    "de": "Ganze Wörter"
+  },
+  "Filtra percorso · es. src/*.rs": {
+    "en": "Filter path · e.g. src/*.rs",
+    "fr": "Filtrer le chemin · ex. src/*.rs",
+    "de": "Pfad filtern · z. B. src/*.rs"
+  },
+  "Sostituisci con…": {
+    "en": "Replace with…",
+    "fr": "Remplacer par…",
+    "de": "Ersetzen durch…"
+  },
+  "Seleziona tutti": {
+    "en": "Select all",
+    "fr": "Tout sélectionner",
+    "de": "Alle auswählen"
+  },
+  "Nessuno": {
+    "en": "None",
+    "fr": "Aucun",
+    "de": "Keine"
+  },
+  "I risultati appariranno qui": {
+    "en": "Results will appear here",
+    "fr": "Les résultats apparaîtront ici",
+    "de": "Ergebnisse erscheinen hier"
+  },
+  "Seleziona un file per l'anteprima": {
+    "en": "Select a file to preview",
+    "fr": "Sélectionnez un fichier à prévisualiser",
+    "de": "Datei für die Vorschau auswählen"
+  },
+  "Modifica": {
+    "en": "Edit",
+    "fr": "Modifier",
+    "de": "Bearbeiten"
+  },
+  "Editor esterno ↗": {
+    "en": "External editor ↗",
+    "fr": "Éditeur externe ↗",
+    "de": "Externer Editor ↗"
+  },
+  "Editor esterno…": {
+    "en": "External editor…",
+    "fr": "Éditeur externe…",
+    "de": "Externer Editor…"
+  },
+  "Editor esterno": {
+    "en": "External editor",
+    "fr": "Éditeur externe",
+    "de": "Externer Editor"
+  },
+  "Un clic: anteprima   ·   Doppio clic: modifica   ·   Ctrl+S: salva": {
+    "en": "Click: preview   ·   Double-click: edit   ·   Ctrl+S: save",
+    "fr": "Clic : aperçu   ·   Double-clic : modifier   ·   Ctrl+S : enregistrer",
+    "de": "Klick: Vorschau   ·   Doppelklick: Bearbeiten   ·   Strg+S: Speichern"
+  },
+  "Pannello progetto": {
+    "en": "Project panel",
+    "fr": "Panneau projet",
+    "de": "Projektbereich"
+  },
+  "Pannello ricerca": {
+    "en": "Search panel",
+    "fr": "Panneau de recherche",
+    "de": "Suchbereich"
+  },
+  "Pannello editor": {
+    "en": "Editor panel",
+    "fr": "Panneau éditeur",
+    "de": "Editorbereich"
+  },
+  "Espandi editor": {
+    "en": "Expand editor",
+    "fr": "Agrandir l’éditeur",
+    "de": "Editor vergrößern"
+  },
+  "Espandi/ripristina editor · Ctrl+Shift+E": {
+    "en": "Expand/restore editor · Ctrl+Shift+E",
+    "fr": "Agrandir/rétablir l’éditeur · Ctrl+Shift+E",
+    "de": "Editor vergrößern/wiederherstellen · Ctrl+Shift+E"
+  },
+  "Espandi / ripristina pannello": {
+    "en": "Expand / restore panel",
+    "fr": "Agrandir / rétablir le panneau",
+    "de": "Bereich vergrößern / wiederherstellen"
+  },
+  "Nascondi pannello · riapri dal menù Visualizza": {
+    "en": "Hide panel · reopen from View menu",
+    "fr": "Masquer le panneau · rouvrir via Affichage",
+    "de": "Bereich ausblenden · über Ansicht wieder öffnen"
+  },
+  "Personalizza colori…": {
+    "en": "Customize colors…",
+    "fr": "Personnaliser les couleurs…",
+    "de": "Farben anpassen…"
+  },
+  "Esporta tema…": {
+    "en": "Export theme…",
+    "fr": "Exporter le thème…",
+    "de": "Design exportieren…"
+  },
+  "Importa tema…": {
+    "en": "Import theme…",
+    "fr": "Importer le thème…",
+    "de": "Design importieren…"
+  },
+  "Esporta tema": {
+    "en": "Export theme",
+    "fr": "Exporter le thème",
+    "de": "Design exportieren"
+  },
+  "Importa tema": {
+    "en": "Import theme",
+    "fr": "Importer le thème",
+    "de": "Design importieren"
+  },
+  "Giorno / notte": {
+    "en": "Day / night",
+    "fr": "Jour / nuit",
+    "de": "Tag / Nacht"
+  },
+  "Ripristina sostituzione…": {
+    "en": "Undo replacement…",
+    "fr": "Annuler le remplacement…",
+    "de": "Ersetzung rückgängig machen…"
+  },
+  "Ricarica file dal disco": {
+    "en": "Reload file from disk",
+    "fr": "Recharger le fichier du disque",
+    "de": "Datei vom Datenträger neu laden"
+  },
+  "Ricarica": {
+    "en": "Reload",
+    "fr": "Recharger",
+    "de": "Neu laden"
+  },
+  "Scartare le modifiche non salvate?": {
+    "en": "Discard unsaved changes?",
+    "fr": "Abandonner les modifications non enregistrées ?",
+    "de": "Ungespeicherte Änderungen verwerfen?"
+  },
+  "Diagnostica": {
+    "en": "Diagnostics",
+    "fr": "Diagnostic",
+    "de": "Diagnose"
+  },
+  "Apri cartella dei log": {
+    "en": "Open log folder",
+    "fr": "Ouvrir le dossier des journaux",
+    "de": "Protokollordner öffnen"
+  },
+  "Apri log del progetto": {
+    "en": "Open project logs",
+    "fr": "Ouvrir les journaux du projet",
+    "de": "Projektprotokolle öffnen"
+  },
+  "Sintassi di ricerca": {
+    "en": "Search syntax",
+    "fr": "Syntaxe de recherche",
+    "de": "Suchsyntax"
+  },
+  "Ricerca e sostituzione": {
+    "en": "Search and replace",
+    "fr": "Rechercher et remplacer",
+    "de": "Suchen und Ersetzen"
+  },
+  "Scegli una directory radice per iniziare": {
+    "en": "Choose a root directory to begin",
+    "fr": "Choisissez un dossier racine pour commencer",
+    "de": "Wählen Sie zuerst einen Stammordner"
+  },
+  "Directory radice": {
+    "en": "Root directory",
+    "fr": "Dossier racine",
+    "de": "Stammordner"
+  },
+  "Trova nel file": {
+    "en": "Find in file",
+    "fr": "Rechercher dans le fichier",
+    "de": "In Datei suchen"
+  },
+  "Progetto aperto · F5 aggiorna l'indice": {
+    "en": "Project opened · F5 updates the index",
+    "fr": "Projet ouvert · F5 actualise l’index",
+    "de": "Projekt geöffnet · F5 aktualisiert den Index"
+  },
+  "Analisi dei tipi di file…": {
+    "en": "Analyzing file types…",
+    "fr": "Analyse des types de fichiers…",
+    "de": "Dateitypen werden analysiert…"
+  },
+  "File da includere": {
+    "en": "Files to include",
+    "fr": "Fichiers à inclure",
+    "de": "Einzubeziehende Dateien"
+  },
+  "Estensione": {
+    "en": "Extension",
+    "fr": "Extension",
+    "de": "Erweiterung"
+  },
+  "Applica selezione": {
+    "en": "Apply selection",
+    "fr": "Appliquer la sélection",
+    "de": "Auswahl anwenden"
+  },
+  "Rianalizza cartelle": {
+    "en": "Rescan folders",
+    "fr": "Réanalyser les dossiers",
+    "de": "Ordner erneut analysieren"
+  },
+  "Nessuna estensione selezionata": {
+    "en": "No extension selected",
+    "fr": "Aucune extension sélectionnée",
+    "de": "Keine Erweiterung ausgewählt"
+  },
+  "Indicizzazione in corso…": {
+    "en": "Indexing…",
+    "fr": "Indexation en cours…",
+    "de": "Indexierung läuft…"
+  },
+  "Indice aggiornato · %1 file · %2 invariati · %3 errori": {
+    "en": "Index updated · %1 files · %2 unchanged · %3 errors",
+    "fr": "Index actualisé · %1 fichiers · %2 inchangés · %3 erreurs",
+    "de": "Index aktualisiert · %1 Dateien · %2 unverändert · %3 Fehler"
+  },
+  "Annullato: indice precedente conservato": {
+    "en": "Canceled: previous index preserved",
+    "fr": "Annulé : index précédent conservé",
+    "de": "Abgebrochen: vorheriger Index beibehalten"
+  },
+  "Inserisci il testo da cercare": {
+    "en": "Enter text to search",
+    "fr": "Saisissez le texte à rechercher",
+    "de": "Suchtext eingeben"
+  },
+  "%1 corrispondenze · %2 file · %3 ms%4%5": {
+    "en": "%1 matches · %2 files · %3 ms%4%5",
+    "fr": "%1 correspondances · %2 fichiers · %3 ms%4%5",
+    "de": "%1 Treffer · %2 Dateien · %3 ms%4%5"
+  },
+  "Apertura file": {
+    "en": "Opening file",
+    "fr": "Ouverture du fichier",
+    "de": "Datei öffnen"
+  },
+  "Recupero bozza": {
+    "en": "Draft recovery",
+    "fr": "Récupération du brouillon",
+    "de": "Entwurfswiederherstellung"
+  },
+  "Recuperare le modifiche non salvate per questo file?": {
+    "en": "Recover unsaved changes for this file?",
+    "fr": "Récupérer les modifications non enregistrées de ce fichier ?",
+    "de": "Ungespeicherte Änderungen dieser Datei wiederherstellen?"
+  },
+  "Salvataggio": {
+    "en": "Save",
+    "fr": "Enregistrement",
+    "de": "Speichern"
+  },
+  "File salvato · F5 aggiorna i simboli": {
+    "en": "File saved · F5 updates symbols",
+    "fr": "Fichier enregistré · F5 actualise les symboles",
+    "de": "Datei gespeichert · F5 aktualisiert Symbole"
+  },
+  "Modifiche non salvate": {
+    "en": "Unsaved changes",
+    "fr": "Modifications non enregistrées",
+    "de": "Ungespeicherte Änderungen"
+  },
+  "Salvare %1?": {
+    "en": "Save %1?",
+    "fr": "Enregistrer %1 ?",
+    "de": "%1 speichern?"
+  },
+  "Operazione in corso: chiudi al termine.": {
+    "en": "Operation in progress: close when finished.",
+    "fr": "Opération en cours : fermez après la fin.",
+    "de": "Vorgang läuft: nach Abschluss schließen."
+  },
+  "Operazione in corso: attendi o interrompi.": {
+    "en": "Operation in progress: wait or stop it.",
+    "fr": "Opération en cours : attendez ou interrompez-la.",
+    "de": "Vorgang läuft: warten oder abbrechen."
+  },
+  "Modifiche aperte": {
+    "en": "Pending changes",
+    "fr": "Modifications en cours",
+    "de": "Ausstehende Änderungen"
+  },
+  "Salva o chiudi le schede modificate prima della sostituzione o del ripristino.": {
+    "en": "Save or close modified tabs before replacement or recovery.",
+    "fr": "Enregistrez ou fermez les onglets modifiés avant le remplacement ou la restauration.",
+    "de": "Geänderte Registerkarten vor dem Ersetzen oder Wiederherstellen speichern oder schließen."
+  },
+  "Seleziona i file con le checkbox dei risultati.": {
+    "en": "Select files using the result checkboxes.",
+    "fr": "Sélectionnez les fichiers avec les cases des résultats.",
+    "de": "Dateien über die Kontrollkästchen der Ergebnisse auswählen."
+  },
+  "Preparazione anteprima e copie di recupero…": {
+    "en": "Preparing preview and recovery copies…",
+    "fr": "Préparation de l’aperçu et des copies de récupération…",
+    "de": "Vorschau und Wiederherstellungskopien werden erstellt…"
+  },
+  "Nessuna modifica da applicare": {
+    "en": "No changes to apply",
+    "fr": "Aucune modification à appliquer",
+    "de": "Keine Änderungen anzuwenden"
+  },
+  "Verifica sostituzione": {
+    "en": "Review replacement",
+    "fr": "Vérifier le remplacement",
+    "de": "Ersetzung prüfen"
+  },
+  "Applica ai %1 file": {
+    "en": "Apply to %1 files",
+    "fr": "Appliquer aux %1 fichiers",
+    "de": "Auf %1 Dateien anwenden"
+  },
+  "Sostituzione completata: %1 file": {
+    "en": "Replacement completed: %1 files",
+    "fr": "Remplacement terminé : %1 fichiers",
+    "de": "Ersetzung abgeschlossen: %1 Dateien"
+  },
+  "%1 · %2 · %3 file": {
+    "en": "%1 · %2 · %3 files",
+    "fr": "%1 · %2 · %3 fichiers",
+    "de": "%1 · %2 · %3 Dateien"
+  },
+  "Nessuna sostituzione da ripristinare": {
+    "en": "No replacement to undo",
+    "fr": "Aucun remplacement à annuler",
+    "de": "Keine Ersetzung rückgängig zu machen"
+  },
+  "Ripristina originali": {
+    "en": "Restore originals",
+    "fr": "Restaurer les originaux",
+    "de": "Originale wiederherstellen"
+  },
+  "Originali ripristinati": {
+    "en": "Originals restored",
+    "fr": "Originaux restaurés",
+    "de": "Originale wiederhergestellt"
+  },
+  "Operazione (i file modificati successivamente saranno protetti)": {
+    "en": "Operation (files modified afterwards will be protected)",
+    "fr": "Opération (les fichiers modifiés depuis seront protégés)",
+    "de": "Vorgang (nachträglich geänderte Dateien werden geschützt)"
+  },
+  "Sfoglia…": {
+    "en": "Browse…",
+    "fr": "Parcourir…",
+    "de": "Durchsuchen…"
+  },
+  "Eseguibile": {
+    "en": "Executable",
+    "fr": "Exécutable",
+    "de": "Programmdatei"
+  },
+  "Editor": {
+    "en": "Editor",
+    "fr": "Éditeur",
+    "de": "Editor"
+  },
+  "Programmi (*.exe)": {
+    "en": "Programs (*.exe)",
+    "fr": "Programmes (*.exe)",
+    "de": "Programme (*.exe)"
+  },
+  "Un argomento per riga": {
+    "en": "One argument per line",
+    "fr": "Un argument par ligne",
+    "de": "Ein Argument pro Zeile"
+  },
+  "Seleziona un eseguibile esistente.": {
+    "en": "Select an existing executable.",
+    "fr": "Sélectionnez un exécutable existant.",
+    "de": "Wählen Sie eine vorhandene Programmdatei."
+  },
+  "Salva le modifiche aperte prima di passare all'editor esterno.": {
+    "en": "Save pending changes before switching to the external editor.",
+    "fr": "Enregistrez les modifications avant de passer à l’éditeur externe.",
+    "de": "Änderungen vor dem Wechsel zum externen Editor speichern."
+  },
+  "Impossibile avviare l'editor configurato.": {
+    "en": "Cannot start the configured editor.",
+    "fr": "Impossible de lancer l’éditeur configuré.",
+    "de": "Der konfigurierte Editor kann nicht gestartet werden."
+  },
+  "Palette e contrasto": {
+    "en": "Palette and contrast",
+    "fr": "Palette et contraste",
+    "de": "Palette und Kontrast"
+  },
+  "Sfondo": {
+    "en": "Background",
+    "fr": "Arrière-plan",
+    "de": "Hintergrund"
+  },
+  "Pannelli / gradiente": {
+    "en": "Panels / gradient",
+    "fr": "Panneaux / dégradé",
+    "de": "Bereiche / Farbverlauf"
+  },
+  "Testo secondario": {
+    "en": "Secondary text",
+    "fr": "Texte secondaire",
+    "de": "Sekundärtext"
+  },
+  "Accento": {
+    "en": "Accent",
+    "fr": "Accent",
+    "de": "Akzent"
+  },
+  "Parole chiave": {
+    "en": "Keywords",
+    "fr": "Mots-clés",
+    "de": "Schlüsselwörter"
+  },
+  "Stringhe": {
+    "en": "Strings",
+    "fr": "Chaînes",
+    "de": "Zeichenketten"
+  },
+  "Commenti": {
+    "en": "Comments",
+    "fr": "Commentaires",
+    "de": "Kommentare"
+  },
+  "Numeri": {
+    "en": "Numbers",
+    "fr": "Nombres",
+    "de": "Zahlen"
+  },
+  "Personalizzato": {
+    "en": "Custom",
+    "fr": "Personnalisé",
+    "de": "Benutzerdefiniert"
+  },
+  "Tema": {
+    "en": "Theme",
+    "fr": "Thème",
+    "de": "Design"
+  },
+  "Giorno neutro": {
+    "en": "Neutral day",
+    "fr": "Jour neutre",
+    "de": "Neutraler Tag"
+  },
+  "Giorno caldo": {
+    "en": "Warm day",
+    "fr": "Jour chaud",
+    "de": "Warmer Tag"
+  },
+  "Notte grafite": {
+    "en": "Graphite night",
+    "fr": "Nuit graphite",
+    "de": "Graphitnacht"
+  },
+  "Notte blu": {
+    "en": "Blue night",
+    "fr": "Nuit bleue",
+    "de": "Blaue Nacht"
+  },
+  "Sfondo non valido": {
+    "en": "Invalid background",
+    "fr": "Arrière-plan non valide",
+    "de": "Ungültiger Hintergrund"
+  },
+  "Contrasto insufficiente per %1: minimo 4,5:1": {
+    "en": "Insufficient contrast for %1: minimum 4.5:1",
+    "fr": "Contraste insuffisant pour %1 : minimum 4,5:1",
+    "de": "Unzureichender Kontrast für %1: mindestens 4,5:1"
+  },
+  "Contrasto insufficiente sui pannelli": {
+    "en": "Insufficient panel contrast",
+    "fr": "Contraste insuffisant dans les panneaux",
+    "de": "Unzureichender Kontrast in den Bereichen"
+  },
+  "File binario o codifica non supportata": {
+    "en": "Binary file or unsupported encoding",
+    "fr": "Fichier binaire ou encodage non pris en charge",
+    "de": "Binärdatei oder nicht unterstützte Kodierung"
+  },
+  "Codifica non valida o incompleta": {
+    "en": "Invalid or incomplete encoding",
+    "fr": "Encodage non valide ou incomplet",
+    "de": "Ungültige oder unvollständige Kodierung"
+  },
+  "Codifica non UTF-8: file aperto in sola lettura": {
+    "en": "Non-UTF-8 encoding: opened read-only",
+    "fr": "Encodage non UTF-8 : fichier en lecture seule",
+    "de": "Keine UTF-8-Kodierung: schreibgeschützt geöffnet"
+  },
+  "Salvataggio disabilitato per questa codifica": {
+    "en": "Saving disabled for this encoding",
+    "fr": "Enregistrement désactivé pour cet encodage",
+    "de": "Speichern für diese Kodierung deaktiviert"
+  },
+  "Alcuni caratteri non sono rappresentabili nella codifica originale": {
+    "en": "Some characters cannot be represented in the original encoding",
+    "fr": "Certains caractères ne sont pas représentables dans l’encodage d’origine",
+    "de": "Einige Zeichen sind in der ursprünglichen Kodierung nicht darstellbar"
+  },
+  "Il file è stato modificato da un altro programma. Ricaricalo prima di salvare.": {
+    "en": "The file was changed by another program. Reload before saving.",
+    "fr": "Le fichier a été modifié par un autre programme. Rechargez-le avant d’enregistrer.",
+    "de": "Die Datei wurde von einem anderen Programm geändert. Vor dem Speichern neu laden."
+  },
+  "Il file supera il limite di 32 MiB dell'editor": {
+    "en": "File exceeds the editor’s 32 MiB limit",
+    "fr": "Le fichier dépasse la limite de 32 Mio de l’éditeur",
+    "de": "Datei überschreitet die Editorgrenze von 32 MiB"
+  },
+  "Bozza non valida": {
+    "en": "Invalid draft",
+    "fr": "Brouillon non valide",
+    "de": "Ungültiger Entwurf"
+  },
+  "Bozza oltre il limite": {
+    "en": "Draft exceeds size limit",
+    "fr": "Le brouillon dépasse la limite",
+    "de": "Entwurf überschreitet die Größenbegrenzung"
+  },
+  "La bozza richiede un file UTF-8 modificabile": {
+    "en": "Draft requires an editable UTF-8 file",
+    "fr": "Le brouillon nécessite un fichier UTF-8 modifiable",
+    "de": "Entwurf erfordert eine bearbeitbare UTF-8-Datei"
+  },
+  "Copia di recupero non salvata per %1: %2": {
+    "en": "Recovery copy not saved for %1: %2",
+    "fr": "Copie de récupération non enregistrée pour %1 : %2",
+    "de": "Wiederherstellungskopie für %1 nicht gespeichert: %2"
+  },
+  "Operazione annullata": {
+    "en": "Operation canceled",
+    "fr": "Opération annulée",
+    "de": "Vorgang abgebrochen"
+  },
+  "Operazione non completata": {
+    "en": "Operation not completed",
+    "fr": "Opération non terminée",
+    "de": "Vorgang nicht abgeschlossen"
+  },
+  "Motore interrotto. Indice precedente e copie di recupero conservati.": {
+    "en": "Engine interrupted. Previous index and recovery copies preserved.",
+    "fr": "Moteur interrompu. Index précédent et copies de récupération conservés.",
+    "de": "Engine unterbrochen. Vorheriger Index und Wiederherstellungskopien beibehalten."
+  },
+  "Risposta motore oltre il limite": {
+    "en": "Engine response exceeds limit",
+    "fr": "Réponse du moteur trop volumineuse",
+    "de": "Engine-Antwort überschreitet die Grenze"
+  },
+  "Attendi il completamento della scrittura; copie di recupero conservate.": {
+    "en": "Wait for writing to finish; recovery copies are preserved.",
+    "fr": "Attendez la fin de l’écriture ; les copies de récupération sont conservées.",
+    "de": "Warten Sie auf den Abschluss des Schreibvorgangs; Wiederherstellungskopien bleiben erhalten."
+  },
+  "Sostituzione interrotta: Strumenti → Ripristina sostituzione": {
+    "en": "Replacement interrupted: Tools → Undo replacement",
+    "fr": "Remplacement interrompu : Outils → Annuler le remplacement",
+    "de": "Ersetzung unterbrochen: Werkzeuge → Ersetzung rückgängig machen"
+  },
+  "Stesse righe dell’anteprima: massimo 200 righe modificate per file, testo abbreviato a 500 caratteri.": {
+    "en": "Same rows as the preview: up to 200 modified lines per file, text shortened to 500 characters.",
+    "fr": "Mêmes lignes que l’aperçu : au plus 200 lignes modifiées par fichier, texte limité à 500 caractères.",
+    "de": "Dieselben Zeilen wie in der Vorschau: bis zu 200 geänderte Zeilen je Datei, Text auf 500 Zeichen gekürzt."
+  },
+  "Analisi sintattica dell’ultimo indice: i nomi omonimi non sono risolti semanticamente. Macro, overload e chiamate dinamiche possono produrre risultati incompleti. F5 aggiorna l’indice. Linguaggi: C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP.": {
+    "en": "Syntactic analysis of the last index: same-name symbols are not semantically resolved. Macros, overloads and dynamic calls may yield incomplete results. F5 updates the index. Languages: C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP.",
+    "fr": "Analyse syntaxique du dernier index : les symboles homonymes ne sont pas résolus sémantiquement. Macros, surcharges et appels dynamiques peuvent donner des résultats incomplets. F5 actualise l’index. Langages : C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP.",
+    "de": "Syntaktische Analyse des letzten Index: gleichnamige Symbole werden nicht semantisch aufgelöst. Makros, Überladungen und dynamische Aufrufe können unvollständige Ergebnisse liefern. F5 aktualisiert den Index. Sprachen: C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP."
+  },
+  "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser inclusi nella distribuzione.<br>Licenze: cartella licenses della distribuzione.": {
+    "en": "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parsers included in the distribution.<br>Licenses: distribution licenses folder.",
+    "fr": "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Analyseurs inclus dans la distribution.<br>Licences : dossier licenses de la distribution.",
+    "de": "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser in der Distribution enthalten.<br>Lizenzen: Ordner licenses der Distribution."
+  },
+  "%1 file da modificare. Tutte le corrispondenze nei file selezionati saranno sostituite.\nOriginali disponibili in Strumenti → Ripristina sostituzione. Anteprima: prime 200 righe modificate per file.": {
+    "en": "%1 files to modify. All matches in selected files will be replaced.\nOriginals available in Tools → Undo replacement. Preview: first 200 modified lines per file.",
+    "fr": "%1 fichiers à modifier. Toutes les correspondances des fichiers sélectionnés seront remplacées.\nOriginaux disponibles via Outils → Annuler le remplacement. Aperçu : 200 premières lignes modifiées par fichier.",
+    "de": "%1 Dateien werden geändert. Alle Treffer in ausgewählten Dateien werden ersetzt.\nOriginale unter Werkzeuge → Ersetzung rückgängig machen. Vorschau: erste 200 geänderte Zeilen je Datei."
+  },
+  "%1 file esclusi (binari, codifica, dimensione o accesso). %2 errori di scansione.": {
+    "en": "%1 files excluded (binary, encoding, size or access). %2 scan errors.",
+    "fr": "%1 fichiers exclus (binaire, encodage, taille ou accès). %2 erreurs d’analyse.",
+    "de": "%1 Dateien ausgeschlossen (Binärdatei, Kodierung, Größe oder Zugriff). %2 Analysefehler."
+  },
+  "Confini di parola Unicode; lettere, cifre e underscore appartengono alla parola. Disponibile anche con wildcard e regex.": {
+    "en": "Unicode word boundaries; letters, digits and underscores belong to words. Also available with wildcards and regex.",
+    "fr": "Limites de mots Unicode ; lettres, chiffres et traits de soulignement font partie des mots. Disponible avec jokers et regex.",
+    "de": "Unicode-Wortgrenzen; Buchstaben, Ziffern und Unterstriche gehören zum Wort. Auch mit Platzhaltern und Regex verfügbar."
+  },
+  "Regex: $1 o ${nome} per un gruppo; $$ per $. Testo vuoto: elimina le corrispondenze.": {
+    "en": "Regex: $1 or ${name} for a group; $$ for $. Empty text removes matches.",
+    "fr": "Regex : $1 ou ${nom} pour un groupe ; $$ pour $. Un texte vide supprime les correspondances.",
+    "de": "Regex: $1 oder ${name} für eine Gruppe; $$ für $. Leerer Text entfernt Treffer."
+  },
+  "Il file è cambiato dopo la creazione della bozza. La copia di recupero è conservata, senza sovrascrivere il file.": {
+    "en": "The file changed after the draft was created. The recovery copy is preserved without overwriting the file.",
+    "fr": "Le fichier a changé depuis la création du brouillon. La copie de récupération est conservée sans écraser le fichier.",
+    "de": "Die Datei wurde nach Erstellung des Entwurfs geändert. Die Wiederherstellungskopie bleibt erhalten, ohne die Datei zu überschreiben."
+  },
+  "Seleziona le estensioni da indicizzare.\nI file testuali sono ricercabili anche senza parser di simboli.": {
+    "en": "Select extensions to index.\nText files can be searched without a symbol parser.",
+    "fr": "Sélectionnez les extensions à indexer.\nLes fichiers texte sont consultables sans analyseur de symboles.",
+    "de": "Erweiterungen zur Indexierung auswählen.\nTextdateien können ohne Symbolparser durchsucht werden."
+  },
+  "Segnaposto: {file} percorso completo, {line} riga.\nNon aggiungere virgolette: ciascuna riga è un argomento.\nVS Code: --goto e {file}:{line} su due righe separate.": {
+    "en": "Placeholders: {file} full path, {line} line.\nDo not add quotes: each line is one argument.\nVS Code: --goto and {file}:{line} on separate lines.",
+    "fr": "Paramètres : {file} chemin complet, {line} ligne.\nN’ajoutez pas de guillemets : chaque ligne est un argument.\nVS Code : --goto et {file}:{line} sur deux lignes.",
+    "de": "Platzhalter: {file} vollständiger Pfad, {line} Zeile.\nKeine Anführungszeichen hinzufügen: jede Zeile ist ein Argument.\nVS Code: --goto und {file}:{line} auf getrennten Zeilen."
+  },
+  "Testo: sequenza letterale.\nWildcard: * indica zero o più caratteri, ? un carattere, nella singola riga.\nRegex: gruppi e alternative; niente lookaround o backreference nel pattern. Ricerca per riga.\nPercorso: wildcard sull'intero percorso relativo, / separa le cartelle.\nSostituzione regex: $1, ${nome}; $$ inserisce $.\nLe checkbox selezionano i file: verranno sostituite tutte le loro corrispondenze.\nCodifiche: UTF-8, UTF-16 con BOM e Windows-1252; massimo 32 MiB.": {
+    "en": "Text: literal sequence.\nWildcard: * matches zero or more characters, ? one character, within a line.\nRegex: groups and alternatives; no lookaround or pattern backreferences. Searches are line-based.\nPath: wildcard over the relative path, / separates folders.\nRegex replacement: $1, ${name}; $$ inserts $.\nCheckboxes select files: all their matches will be replaced.\nEncodings: UTF-8, UTF-16 with BOM and Windows-1252; maximum 32 MiB.",
+    "fr": "Texte : séquence littérale.\nJokers : * représente zéro ou plusieurs caractères, ? un caractère, sur une ligne.\nRegex : groupes et alternatives ; sans assertions avant/arrière ni références arrière dans le motif. Recherche par ligne.\nChemin : jokers sur le chemin relatif, / sépare les dossiers.\nRemplacement regex : $1, ${nom} ; $$ insère $.\nLes cases sélectionnent les fichiers : toutes leurs correspondances sont remplacées.\nEncodages : UTF-8, UTF-16 avec BOM et Windows-1252 ; maximum 32 Mio.",
+    "de": "Text: wörtliche Zeichenfolge.\nPlatzhalter: * steht für null oder mehr Zeichen, ? für ein Zeichen innerhalb einer Zeile.\nRegex: Gruppen und Alternativen; keine Lookarounds oder Rückverweise im Muster. Zeilenweise Suche.\nPfad: Platzhalter über den relativen Pfad, / trennt Ordner.\nRegex-Ersetzung: $1, ${name}; $$ fügt $ ein.\nKontrollkästchen wählen Dateien aus: alle Treffer darin werden ersetzt.\nKodierungen: UTF-8, UTF-16 mit BOM und Windows-1252; maximal 32 MiB."
+  },
+  "\n%1 file non letti; consulta Diagnostica.": {
+    "en": "\n%1 files could not be read; see Diagnostics.",
+    "fr": "\n%1 fichiers non lus ; voir Diagnostic.",
+    "de": "\n%1 Dateien konnten nicht gelesen werden; siehe Diagnose."
+  },
+  "\nRisultati parziali: affina la ricerca.": {
+    "en": "\nPartial results: refine the search.",
+    "fr": "\nRésultats partiels : affinez la recherche.",
+    "de": "\nUnvollständige Ergebnisse: Suche eingrenzen."
+  },
+  "© 2026 Prof. ing. Raffaele Mele — apri il sito InfoTechLab": {
+    "en": "© 2026 Prof. ing. Raffaele Mele — open InfoTechLab website",
+    "fr": "© 2026 Prof. ing. Raffaele Mele — ouvrir le site InfoTechLab",
+    "de": "© 2026 Prof. ing. Raffaele Mele — InfoTechLab-Website öffnen"
+  },
+  "testo": {
+    "en": "Text",
+    "fr": "Texte",
+    "de": "Text"
+  },
+  "testo secondario": {
+    "en": "Secondary text",
+    "fr": "Texte secondaire",
+    "de": "Sekundärtext"
+  },
+  "accento": {
+    "en": "Accent",
+    "fr": "Accent",
+    "de": "Akzent"
+  },
+  "parole chiave": {
+    "en": "Keywords",
+    "fr": "Mots-clés",
+    "de": "Schlüsselwörter"
+  },
+  "stringhe": {
+    "en": "Strings",
+    "fr": "Chaînes",
+    "de": "Zeichenketten"
+  },
+  "commenti": {
+    "en": "Comments",
+    "fr": "Commentaires",
+    "de": "Kommentare"
+  },
+  "numeri": {
+    "en": "Numbers",
+    "fr": "Nombres",
+    "de": "Zahlen"
+  },
+  "Operazione non completata. Consulta i dettagli diagnostici.": {
+    "en": "Operation not completed. See diagnostic details.",
+    "fr": "Opération non terminée. Consultez les détails du diagnostic.",
+    "de": "Vorgang nicht abgeschlossen. Siehe Diagnosedetails."
+  },
+  "Annulla": {
+    "en": "Undo",
+    "fr": "Annuler",
+    "de": "Rückgängig"
+  },
+  "Ripeti": {
+    "en": "Redo",
+    "fr": "Rétablir",
+    "de": "Wiederholen"
+  },
+  "Taglia": {
+    "en": "Cut",
+    "fr": "Couper",
+    "de": "Ausschneiden"
+  },
+  "Copia": {
+    "en": "Copy",
+    "fr": "Copier",
+    "de": "Kopieren"
+  },
+  "Incolla": {
+    "en": "Paste",
+    "fr": "Coller",
+    "de": "Einfügen"
+  },
+  "Elimina": {
+    "en": "Delete",
+    "fr": "Supprimer",
+    "de": "Löschen"
+  },
+  "Cerca riferimento incrociato": {
+    "en": "Find cross-reference",
+    "fr": "Rechercher une référence croisée",
+    "de": "Querverweis suchen"
+  },
+  "Stampante…": {
+    "en": "Printer…",
+    "fr": "Imprimante…",
+    "de": "Drucker…"
+  },
+  "Salva PDF…": {
+    "en": "Save PDF…",
+    "fr": "Enregistrer en PDF…",
+    "de": "PDF speichern…"
+  },
+  "PDF salvato: %1": {
+    "en": "PDF saved: %1",
+    "fr": "PDF enregistré : %1",
+    "de": "PDF gespeichert: %1"
+  },
+  "Documento inviato alla stampante.": {
+    "en": "Document sent to the printer.",
+    "fr": "Document envoyé à l’imprimante.",
+    "de": "Dokument an den Drucker gesendet."
+  },
+  "Stampa non riuscita. Verifica la stampante o salva in PDF.": {
+    "en": "Printing failed. Check the printer or save as PDF.",
+    "fr": "Échec de l’impression. Vérifiez l’imprimante ou enregistrez en PDF.",
+    "de": "Drucken fehlgeschlagen. Drucker prüfen oder als PDF speichern."
+  },
+  "%1 file · Scegli una stampante di Windows oppure salva direttamente in PDF. La stampa non modifica i sorgenti.": {
+    "en": "%1 files · Choose a Windows printer or save directly as PDF. Printing does not modify source files.",
+    "fr": "%1 fichiers · Choisissez une imprimante Windows ou enregistrez directement en PDF. L’impression ne modifie pas les sources.",
+    "de": "%1 Dateien · Windows-Drucker wählen oder direkt als PDF speichern. Quelldateien werden nicht verändert."
+  },
+  "Per stampare le corrispondenze, esegui una ricerca nel testo dei file.": {
+    "en": "To print matches, search the text of files first.",
+    "fr": "Pour imprimer les correspondances, recherchez d’abord dans le texte des fichiers.",
+    "de": "Zum Drucken von Treffern zuerst den Dateiinhalt durchsuchen."
+  },
+  "Nessuna corrispondenza da stampare. Esegui prima una ricerca.": {
+    "en": "No matches to print. Run a search first.",
+    "fr": "Aucune correspondance à imprimer. Effectuez d’abord une recherche.",
+    "de": "Keine Treffer zum Drucken. Zuerst eine Suche ausführen."
+  },
+  "Nessuna stampante configurata. Puoi usare Salva PDF.": {
+    "en": "No printer configured. You can use Save PDF.",
+    "fr": "Aucune imprimante configurée. Vous pouvez utiliser Enregistrer en PDF.",
+    "de": "Kein Drucker eingerichtet. Sie können PDF speichern verwenden."
+  }
+}

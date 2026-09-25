@@ -1,0 +1,12 @@
+{
+  "name": "Giorno neutro",
+  "background": "#FFFFFF",
+  "foreground": "#1F2328",
+  "panel": "#F0F3F6",
+  "muted": "#586069",
+  "accent": "#0969DA",
+  "keyword": "#6639BA",
+  "string": "#116329",
+  "comment": "#586069",
+  "number": "#953800"
+}

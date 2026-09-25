@@ -1,0 +1,13 @@
+/reports/
+/.codex/
+/.agents/
+/AGENTS.md
+/modern/REQUISITI.md
+/modern/third_party/*.zip
+**/__pycache__/
+**/.sn-index/
+*.pyc
+*.dmp
+*.log
+.DS_Store
+Thumbs.db

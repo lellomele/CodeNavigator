@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Animazione delle Variabili</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding-top: 50px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .box {
+            width: 150px;
+            height: 150px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background-color: #ffe6e6;
+            position: relative;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .box.filled {
+            background-color: #e6ffe6;
+            transform: scale(1.05);
+        }
+        .box .name {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            font-weight: bold;
+        }
+        .box .value {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            color: #333;
+        }
+        .box .type {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            padding: 4px 7px;
+            border-radius: 5px;
+            background-color: #452078;
+            color: #fff;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .box .type:empty { display: none; }
+        .instructions {
+            font-size: 1em;
+            color: #555;
+            margin-top: 20px;
+        }
+        .assignment {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5em;
+            color: #222;
+            margin-top: 20px;
+            min-height: 2em;
+            padding: 10px;
+            background-color: #fff8dc;
+            border: 2px solid #ffeb3b;
+            border-radius: 5px;
+            display: inline-block;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .assignment.visible { opacity: 1; }
+        [hidden] { display: none !important; }
+        .definition {
+            max-width: 680px;
+            margin: 24px auto;
+            padding: 20px;
+            border-left: 6px solid #452078;
+            border-radius: 10px;
+            background: #eee5fc;
+            color: #32165b;
+            font-size: 1.25em;
+            line-height: 1.6;
+        }
+        .definition .term-name { color: #005a9c; }
+        .definition .term-value { color: #a12b16; }
+        .definition .term-type { color: #176332; }
+        .examples-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(25, 16, 40, 0.55);
+        }
+        .examples-card {
+            box-sizing: border-box;
+            width: min(100%, 560px);
+            max-height: calc(100dvh - 40px);
+            overflow: auto;
+            padding: 28px;
+            border: 3px solid #7040a8;
+            border-radius: 16px;
+            background: #fff;
+            color: #32165b;
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.3);
+        }
+        .examples-card h2 { margin-top: 0; }
+        .examples-card code {
+            display: block;
+            margin: 14px 0;
+            padding: 16px;
+            border-radius: 8px;
+            background: #eee5fc;
+            font-size: 1.25em;
+            overflow-wrap: anywhere;
+        }
+        .examples-card p { line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <h1>Concetto di <b>Variabile</b></h1>
+    <div class="container">
+        <div class="box" id="box1">
+            <div class="name"></div>
+            <div class="value"></div>
+            <div class="type" title="Tipo presunto del valore assegnato"></div>
+        </div>
+        <div class="box" id="box2">
+            <div class="name"></div>
+            <div class="value"></div>
+            <div class="type" title="Tipo presunto del valore assegnato"></div>
+        </div>
+        <div class="box" id="box3">
+            <div class="name"></div>
+            <div class="value"></div>
+            <div class="type" title="Tipo presunto del valore assegnato"></div>
+        </div>
+        <div class="box" id="box4">
+            <div class="name"></div>
+            <div class="value"></div>
+            <div class="type" title="Tipo presunto del valore assegnato"></div>
+        </div>
+    </div>
+    <div class="instructions">
+        Usa i tasti <strong>freccia destra</strong> e <strong>freccia sinistra</strong> per avanzare o tornare indietro.<br>
+        Prima i box sono vuoti, poi ricevono un nome e infine un valore.<br>
+        L’etichetta viola indica il tipo presunto del valore assegnato.
+    </div>
+    <div class="assignment" id="assignment" aria-live="polite"></div>
+    <div class="definition" id="definition" aria-live="polite" hidden>
+        <strong>Una variabile è una “scatola” con un <span class="term-name">nome</span>, che contiene un <span class="term-value">valore</span> di un certo <span class="term-type">tipo</span>.
+        Con l’assegnazione inseriamo il <span class="term-value">valore</span> nella scatola.</strong>
+    </div>
+    <div class="examples-overlay" id="examples" hidden>
+        <section class="examples-card" aria-labelledby="examples-title" aria-live="polite">
+            <h2 id="examples-title"></h2>
+            <p id="examples-description"></p>
+            <code id="example-first"></code>
+            <code id="example-second"></code>
+            <p><strong>→ Continua</strong> &nbsp; · &nbsp; <strong>← Torna indietro</strong></p>
+        </section>
+    </div>
+    <script>
+        const variables = [
+            { name: "variabile1", value: "10", presumedType: "intero" },
+            { name: "variabile2", value: "3.14", presumedType: "reale" },
+            { name: "variabile3", value: '"Ciao"', displayValue: "Ciao", presumedType: "stringa" },
+            { name: "variabile4", value: "true", presumedType: "booleano" }
+        ];
+
+        // La definizione precede la comparsa dei nomi sui box.
+        const examplesByType = {
+            intero: { description: "Numeri senza parte decimale.", values: ["numeroStudenti = 25", "punti = 100"] },
+            reale: { description: "Numeri che possono avere una parte decimale.", values: ["temperatura = 21.5", "altezza = 1.75"] },
+            stringa: { description: "Testo racchiuso tra virgolette.", values: ['nome = "Anna"', 'città = "Roma"'] },
+            booleano: { description: "Due soli valori: true (vero) oppure false (falso).", values: ["acceso = true", "completato = false"] }
+        };
+        const steps = [{ type: 'definition' }, { type: 'name' }];
+        variables.forEach((variable, index) => {
+            steps.push({ type: 'instruction', variable: variable, boxIndex: index });
+            steps.push({ type: 'assign', variable: variable, boxIndex: index });
+            steps.push({ type: 'examples', variable: variable, boxIndex: index });
+            steps.push({ type: 'hide', variable: variable, boxIndex: index });
+        });
+
+        let currentStep = 0;
+        const boxes = variables.map((variable, index) => document.getElementById(`box${index + 1}`));
+        const assignmentDisplay = document.getElementById('assignment');
+        const definitionDisplay = document.getElementById('definition');
+        const examplesDisplay = document.getElementById('examples');
+
+        function updateDisplayCorrectly() {
+            // Ricostruisce lo stato anche quando si torna indietro.
+            boxes.forEach((box) => {
+                box.classList.remove('filled');
+                box.querySelector('.name').textContent = "";
+                box.querySelector('.value').textContent = "";
+                box.querySelector('.type').textContent = "";
+            });
+            assignmentDisplay.classList.remove('visible');
+            assignmentDisplay.textContent = "";
+            definitionDisplay.hidden = true;
+            examplesDisplay.hidden = true;
+
+            for (let i = 0; i < currentStep; i++) {
+                const step = steps[i];
+                if (step.type === 'name') {
+                    boxes.forEach((box, index) => {
+                        box.querySelector('.name').textContent = variables[index].name;
+                    });
+                } else if (step.type === 'instruction') {
+                    assignmentDisplay.textContent = `${step.variable.name} = ${step.variable.value}`;
+                    assignmentDisplay.classList.add('visible');
+                } else if (step.type === 'assign') {
+                    const box = boxes[step.boxIndex];
+                    box.querySelector('.value').textContent = step.variable.displayValue ?? step.variable.value;
+                    box.querySelector('.type').textContent = step.variable.presumedType;
+                    box.classList.add('filled');
+                } else if (step.type === 'hide') {
+                    assignmentDisplay.textContent = "";
+                    assignmentDisplay.classList.remove('visible');
+                }
+            }
+
+            // Le spiegazioni appartengono solo al passaggio attualmente mostrato.
+            const activeStep = steps[currentStep - 1];
+            definitionDisplay.hidden = activeStep?.type !== 'definition';
+            if (activeStep?.type === 'examples') {
+                const type = activeStep.variable.presumedType;
+                const examples = examplesByType[type];
+                document.getElementById('examples-title').textContent = `Esempi: ${type}`;
+                document.getElementById('examples-description').textContent = examples.description;
+                document.getElementById('example-first').textContent = examples.values[0];
+                document.getElementById('example-second').textContent = examples.values[1];
+                examplesDisplay.hidden = false;
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            // Una pressione prolungata non deve saltare le spiegazioni.
+            if (event.repeat) return;
+            if (event.key === "ArrowRight") {
+                event.preventDefault();
+                if (currentStep < steps.length) {
+                    currentStep++;
+                    updateDisplayCorrectly();
+                }
+            } else if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateDisplayCorrectly();
+                }
+            }
+        });
+        updateDisplayCorrectly();
+    </script>
+</body>
+</html>

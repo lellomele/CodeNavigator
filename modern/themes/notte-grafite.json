@@ -1,0 +1,12 @@
+{
+  "name": "Notte grafite",
+  "background": "#161B22",
+  "foreground": "#E6EDF3",
+  "panel": "#21262D",
+  "muted": "#A8B3BF",
+  "accent": "#79C0FF",
+  "keyword": "#D2A8FF",
+  "string": "#A5D6A7",
+  "comment": "#A8B3BF",
+  "number": "#FFA657"
+}

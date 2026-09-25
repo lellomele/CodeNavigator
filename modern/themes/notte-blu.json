@@ -1,0 +1,12 @@
+{
+  "name": "Notte blu",
+  "background": "#0B1220",
+  "foreground": "#E2E8F0",
+  "panel": "#182236",
+  "muted": "#A6B6CD",
+  "accent": "#67E8F9",
+  "keyword": "#C4B5FD",
+  "string": "#86EFAC",
+  "comment": "#A6B6CD",
+  "number": "#FCD34D"
+}
