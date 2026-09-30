@@ -31,7 +31,7 @@ static void diagnosticMessage(QtMsgType type, const QMessageLogContext &context,
     QMutexLocker lock(&diagnosticMutex);
     QJsonObject event{
         {QStringLiteral("time"), QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs)},
-        {QStringLiteral("version"), QStringLiteral("0.3.0")},
+        {QStringLiteral("version"), QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)},
         {QStringLiteral("severity"), int(type)},
         {QStringLiteral("message"), message},
         {QStringLiteral("file"), QString::fromUtf8(context.file ? context.file : "")},
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("SourceNavigator"));
     app.setApplicationName(QStringLiteral("SourceNavigator"));
-    app.setApplicationVersion(QStringLiteral("0.3.0"));
+    app.setApplicationVersion(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION));
     app.setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
     app.setFont(QFont(QStringLiteral("Segoe UI"), 10));
     QString project, capture, file;

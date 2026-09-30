@@ -58,6 +58,12 @@ class UiTest : public QObject {
             setUiLanguage(languages[i]);Window w;w.show();QTest::qWait(50);
             QCOMPARE(w.menuBar()->actions().first()->text(),fileNames[i]);
             QVERIFY(!w.findChild<QPushButton *>(QStringLiteral("expandEditor"))->icon().isNull());
+            QVERIFY(w.windowTitle().contains(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
+            auto toggle=w.findChild<QToolButton *>(QStringLiteral("replaceToggle"));
+            auto area=w.findChild<QWidget *>(QStringLiteral("replaceArea"));
+            QVERIFY(toggle && area && !area->isVisible());
+            toggle->click();QVERIFY(area->isVisible());
+            toggle->click();QVERIFY(!area->isVisible());
             auto out=qEnvironmentVariable("SN_SCREENSHOT_DIR");
             if(!out.isEmpty()) {QDir().mkpath(out);w.grab().save(out+QStringLiteral("/language-%1.png").arg(languages[i]));}
         }
@@ -141,6 +147,112 @@ class UiTest : public QObject {
         QString error;
         QVERIFY(!e.load(p, error));
     }
+    void fileTypeSortingAndPermanentExclusions() {
+        QTemporaryDir workspace;
+        QVERIFY(workspace.isValid());
+        qputenv("SN_DATA_DIR", workspace.filePath(QStringLiteral("profile")).toUtf8());
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+                           workspace.filePath(QStringLiteral("settings")));
+        QSettings().remove(QStringLiteral("files/excludedExtensions"));
+        const auto root = workspace.filePath(QStringLiteral("sources"));
+        QDir().mkpath(root);
+        for (const auto &group : {qMakePair(QStringLiteral("c"), 2),
+                                  qMakePair(QStringLiteral("cpp"), 10),
+                                  qMakePair(QStringLiteral("rs"), 3)}) {
+            for (int i = 0; i < group.second; ++i) {
+                QFile file(root + QStringLiteral("/sample%1.%2").arg(i).arg(group.first));
+                QVERIFY(file.open(QIODevice::WriteOnly));
+                file.write("// probe\n");
+                file.write(QByteArray(group.second == 10 ? 1024 : group.second == 3 ? 2048 : 512, 'x'));
+            }
+        }
+        Window window;
+        window.show();
+        bool inspected = false;
+        QTimer watcher;
+        watcher.setInterval(20);
+        connect(&watcher, &QTimer::timeout, &window, [&] {
+            auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+            if (!dialog || dialog->windowTitle() != QStringLiteral("File da includere")) return;
+            watcher.stop();
+            QTimer::singleShot(10000, dialog, &QDialog::reject);
+            auto list = dialog->findChild<QTreeWidget *>(QStringLiteral("fileTypeList"));
+            QVERIFY(list);
+            QCOMPARE(list->topLevelItemCount(), 3);
+            auto header = list->header();
+            const auto clickCount = [&] {
+                QTest::mouseClick(header->viewport(), Qt::LeftButton, Qt::NoModifier,
+                                  QPoint(header->sectionViewportPosition(1) + 8, header->height() / 2));
+            };
+            clickCount();
+            QCOMPARE(header->sortIndicatorSection(), 1);
+            QCOMPARE(list->topLevelItem(0)->data(1, Qt::UserRole).toInt(),
+                     header->sortIndicatorOrder() == Qt::AscendingOrder ? 2 : 10);
+            clickCount();
+            QCOMPARE(list->topLevelItem(0)->data(1, Qt::UserRole).toInt(),
+                     header->sortIndicatorOrder() == Qt::AscendingOrder ? 2 : 10);
+            QTest::mouseClick(header->viewport(), Qt::LeftButton, Qt::NoModifier,
+                              QPoint(header->sectionViewportPosition(2) + 8, header->height() / 2));
+            QCOMPARE(header->sortIndicatorSection(), 2);
+            QCOMPARE(list->topLevelItem(0)->data(2, Qt::UserRole).toLongLong(),
+                     header->sortIndicatorOrder() == Qt::AscendingOrder ? 2 * (512 + 9) : 10 * (1024 + 9));
+            for (int i = 0; i < list->topLevelItemCount(); ++i) {
+                auto row = list->topLevelItem(i);
+                if (row->text(0) == QStringLiteral("rs")) {
+                    row->setCheckState(3, Qt::Checked);
+                    QCOMPARE(row->checkState(0), Qt::Unchecked);
+                }
+            }
+            inspected = true;
+            dialog->accept();
+        });
+        watcher.start();
+        window.openProject(root);
+        QTRY_VERIFY_WITH_TIMEOUT(inspected, 15000);
+        QTRY_VERIFY_WITH_TIMEOUT(QSettings().value(QStringLiteral("files/excludedExtensions"))
+                                     .toStringList().contains(QStringLiteral("rs")), 5000);
+        auto projectTree = window.findChild<QTreeView *>(QStringLiteral("projectTree"));
+        auto proxy = qobject_cast<QSortFilterProxyModel *>(projectTree->model());
+        auto model = qobject_cast<QFileSystemModel *>(proxy->sourceModel());
+        const auto rustFile = root + QStringLiteral("/sample0.rs");
+        QTRY_VERIFY(model->index(rustFile).isValid());
+        QVERIFY(!proxy->mapFromSource(model->index(rustFile)).isValid());
+        QTRY_VERIFY_WITH_TIMEOUT(!window.findChild<QProgressBar *>()->isVisible(), 30000);
+        auto search = window.findChild<QLineEdit *>(QStringLiteral("searchPattern"));
+        auto results = window.findChild<QTreeWidget *>(QStringLiteral("searchResults"));
+        search->setText(QStringLiteral("probe"));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 12, 15000);
+        search->clear();
+        bool hiddenInDialog = false;
+        QTimer::singleShot(0, &window, [&] {
+            auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+            QVERIFY(dialog);
+            auto list = dialog->findChild<QTreeWidget *>(QStringLiteral("fileTypeList"));
+            QVERIFY(list);
+            QCOMPARE(list->topLevelItemCount(), 2);
+            list->sortByColumn(1, Qt::DescendingOrder);
+            hiddenInDialog = true;
+            dialog->accept();
+        });
+        window.findChild<QPushButton *>(QStringLiteral("fileTypes"))->click();
+        QVERIFY(hiddenInDialog);
+        QVERIFY(!window.findChild<QProgressBar *>()->isVisible());
+        bool restored = false;
+        QTimer::singleShot(0, &window, [&] {
+            auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+            QVERIFY(dialog);
+            auto list = dialog->findChild<QTreeWidget *>(QStringLiteral("excludedExtensionsList"));
+            QVERIFY(list);
+            QCOMPARE(list->topLevelItemCount(), 1);
+            list->topLevelItem(0)->setCheckState(0, Qt::Unchecked);
+            restored = true;
+            dialog->accept();
+        });
+        window.findChild<QAction *>(QStringLiteral("excludedExtensionsAction"))->trigger();
+        QVERIFY(restored);
+        QVERIFY(QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList().isEmpty());
+        QTRY_VERIFY(proxy->mapFromSource(model->index(rustFile)).isValid());
+    }
     void projectSearchPreviewReplaceAndExternalEditor() {
         QTemporaryDir d;
         QVERIFY(d.isValid());
@@ -208,9 +320,11 @@ class UiTest : public QObject {
         w.findChild<QPushButton *>(QStringLiteral("fileTypes"))->click();
         QVERIFY(cachedDialog);
         auto projectTree=w.findChild<QTreeView *>(QStringLiteral("projectTree"));
-        auto model=qobject_cast<QFileSystemModel *>(projectTree->model());
+        auto proxy=qobject_cast<QSortFilterProxyModel *>(projectTree->model());
+        auto model=qobject_cast<QFileSystemModel *>(proxy->sourceModel());
         const auto folder=root+QStringLiteral("/nested folder");QDir().mkpath(folder);
-        QTRY_VERIFY(model->index(folder).isValid());projectTree->setCurrentIndex(model->index(folder));
+        QTRY_VERIFY(proxy->mapFromSource(model->index(folder)).isValid());
+        projectTree->setCurrentIndex(proxy->mapFromSource(model->index(folder)));
         bool filterChecked=false;
         QTimer::singleShot(0,&w,[&]{
             auto dialog=qobject_cast<QDialog *>(QApplication::activeModalWidget());QVERIFY(dialog);
@@ -219,7 +333,7 @@ class UiTest : public QObject {
             filterChecked=true;dialog->reject();
         });
         w.findChild<QAction *>(QStringLiteral("crossReferences"))->trigger();QVERIFY(filterChecked);
-        projectTree->setCurrentIndex(model->index(a));
+        projectTree->setCurrentIndex(proxy->mapFromSource(model->index(a)));
         bool xrefsShown = false;
         QTimer::singleShot(0, &w, [&] {
             auto dialog=qobject_cast<QDialog *>(QApplication::activeModalWidget());

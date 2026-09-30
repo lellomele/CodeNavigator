@@ -30,6 +30,7 @@ add_library(navigator-ui STATIC gui/theme.cpp gui/editor.cpp gui/window.cpp gui/
 target_link_libraries(navigator-ui PUBLIC Qt6::PrintSupport scintilla lexilla Qt${QT_VERSION_MAJOR}::Widgets)
 target_include_directories(navigator-ui PUBLIC gui)
 target_compile_definitions(navigator-ui PRIVATE QT_NO_CAST_FROM_ASCII)
+target_compile_definitions(navigator-ui PUBLIC SOURCE_NAVIGATOR_VERSION=\"${PROJECT_VERSION}\")
 add_executable(source-navigator WIN32 gui/main.cpp gui/crash.cpp)
 if(WIN32)
     enable_language(RC)

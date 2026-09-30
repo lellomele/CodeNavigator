@@ -119,6 +119,8 @@ void Theme::apply(QApplication &app) const {
             "QPushButton[panelControl=true],QToolButton[panelControl=true] {padding:3px;border:1px solid transparent;border-radius:3px;background:transparent;} "
             "QPushButton[panelControl=true]:hover,QToolButton[panelControl=true]:hover {border:1px solid %5;background:%2;} "
             "QPushButton:hover {border-color:%5;} "
+            "QToolButton#replaceToggle {padding:8px; border:1px solid %4; border-radius:6px; background:%2; color:%3; text-align:left;} "
+            "QToolButton#replaceToggle:hover,QToolButton#replaceToggle:checked {border-color:%5;} "
             "QPushButton#replacePreview,QPushButton#openProject {background:%5; color:%6; "
             "border:0; font-weight:600;} "
             "QPushButton:disabled {color:%4; background:%2;} "

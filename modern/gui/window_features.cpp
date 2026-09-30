@@ -30,11 +30,11 @@ bool Window::closeProject() {
     if (queryProcess) { queryProcess->disconnect(this); queryProcess->kill(); queryProcess->deleteLater(); queryProcess=nullptr; }
     root.clear(); db.clear(); extensions.clear(); discoveryCache={}; selectedPath.clear();
     results->clear(); currentResults={}; replaceButton->setEnabled(false);
-    tree->setRootIndex(fileModel->setRootPath(QString()));
+    tree->setRootIndex(projectFileFilter->mapFromSource(fileModel->setRootPath(QString())));
     preview->send(SCI_SETREADONLY,0); preview->sends(SCI_SETTEXT,0,""); preview->send(SCI_SETREADONLY,1);
     projectLabel->clear(); previewLabel->clear(); resultLabel->clear();
     state->setText(ui(QStringLiteral("Scegli una directory radice per iniziare")));
-    setWindowTitle(QStringLiteral("Source Navigator"));
+    setWindowTitle(QStringLiteral("Source Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
     QSettings().remove(QStringLiteral("session/lastProject"));
     return true;
 }
@@ -51,7 +51,7 @@ void Window::saveAs() {
 }
 QString Window::selectedProjectPathFilter() const {
     const auto index = tree->currentIndex();
-    QFileInfo selected(index.isValid() ? fileModel->filePath(index) : root);
+    QFileInfo selected(index.isValid() ? fileModel->filePath(projectFileFilter->mapToSource(index)) : root);
     const auto directory = selected.isDir() ? selected.absoluteFilePath() : selected.absolutePath();
     const auto relative = QDir(root).relativeFilePath(directory);
     if (relative == QStringLiteral(".") || relative == QStringLiteral("..") || relative.startsWith(QStringLiteral("../")) || QDir::isAbsolutePath(relative))

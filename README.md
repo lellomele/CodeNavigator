@@ -32,8 +32,8 @@ Specificare in `QtPrefix` la radice dell’SDK Qt effettivamente installato. Rus
 
 ## Uso
 
-1. **File → Apri progetto**: scegliere la cartella radice e le estensioni da includere. **Tipi di file** riapre l’ultima analisi; **Rianalizza cartelle** aggiorna l’elenco. **F5** aggiorna l’indice.
-2. Cercare nel pannello centrale. Un clic mostra l’anteprima; un doppio clic apre il file nell’editor. Selezionare con le checkbox i file da sostituire e verificare **Anteprima sostituzione** prima di applicare.
+1. **File → Apri progetto**: scegliere la cartella radice e le estensioni da includere. **Tipi di file** riapre l’ultima analisi; un clic sulle intestazioni ordina le colonne. Spuntare **Escludi sempre** per nascondere un’estensione da tutti i progetti; **Preferenze → Estensioni escluse** permette di ripristinarla. **Rianalizza cartelle** aggiorna l’elenco. **F5** aggiorna l’indice.
+2. Cercare nel pannello centrale. Un clic mostra l’anteprima; un doppio clic apre il file nell’editor. Le opzioni di sostituzione si aprono con **Mostra opzioni di sostituzione**. Selezionare con le checkbox i file da sostituire e verificare **Anteprima sostituzione** prima di applicare.
 3. **Strumenti → Ripristina sostituzione** recupera gli originali. Salvare o chiudere le schede modificate prima di sostituire o ripristinare.
 4. **Strumenti → Riferimenti incrociati** (`Ctrl+Shift+R`) cerca le relazioni del simbolo. Il filtro parte dalla cartella selezionata nel progetto. Il clic destro su una parola nell’editor offre la stessa ricerca.
 5. **File → Stampa corrispondenze** (`Ctrl+P`) stampa i file spuntati, oppure tutti quelli nei risultati se nessuno è spuntato. **Stampante…** apre la scelta stampante di Windows; **Salva PDF…** funziona anche senza stampanti installate. La stampa usa il contenuto salvato su disco.

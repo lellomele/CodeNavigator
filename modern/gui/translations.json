@@ -1093,5 +1093,37 @@
     "en": "No printer configured. You can use Save PDF.",
     "fr": "Aucune imprimante configurée. Vous pouvez utiliser Enregistrer en PDF.",
     "de": "Kein Drucker eingerichtet. Sie können PDF speichern verwenden."
+  },
+  "Mostra opzioni di sostituzione": {
+    "en": "Show replace options",
+    "fr": "Afficher les options de remplacement",
+    "de": "Ersetzungsoptionen anzeigen"
+  },
+  "Estensioni escluse…": {
+    "en": "Excluded extensions…",
+    "fr": "Extensions exclues…",
+    "de": "Ausgeschlossene Erweiterungen…"
+  },
+  "Estensioni escluse": {
+    "en": "Excluded extensions",
+    "fr": "Extensions exclues",
+    "de": "Ausgeschlossene Erweiterungen"
+  },
+  "Le estensioni selezionate restano nascoste in tutti i progetti. Deseleziona quelle da ripristinare.": {
+    "en": "Selected extensions stay hidden in all projects. Uncheck those you want to restore.",
+    "fr": "Les extensions sélectionnées restent masquées dans tous les projets. Décochez celles à restaurer.",
+    "de": "Ausgewählte Erweiterungen bleiben in allen Projekten ausgeblendet. Deaktivieren Sie die wiederherzustellenden."
+  },
+  "Escludi sempre": {
+    "en": "Always exclude",
+    "fr": "Toujours exclure",
+    "de": "Immer ausschließen"
   }
+,
+  "Nascondi opzioni di sostituzione": {
+    "en": "Hide replace options",
+    "fr": "Masquer les options de remplacement",
+    "de": "Ersetzungsoptionen ausblenden"
+  }
+
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "editor.h"
+#include "file_filter.h"
 #include <QJsonArray>
 #include <QProcess>
 #include <QtWidgets>
@@ -22,6 +23,7 @@ class Window : public QMainWindow {
     int selectedLine = 1;
     QTreeView *tree;
     QFileSystemModel *fileModel;
+    ProjectFileFilter *projectFileFilter;
     QTabWidget *tabs;
     Editor *preview;
     QLineEdit *pattern, *replacement, *pathFilter;
@@ -39,6 +41,7 @@ class Window : public QMainWindow {
     QJsonObject discoveryCache;
     void discover(bool refresh = false);
     void chooseFileTypes(const QJsonObject &);
+    void manageExcludedExtensions();
     void indexProject();
     void cancelOperation();
     void search();

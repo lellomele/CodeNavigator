@@ -19,7 +19,7 @@ static QString readError(const QByteArray &bytes) {
         .toString(QString::fromUtf8(bytes));
 }
 Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
-    setWindowTitle(QStringLiteral("Source Navigator"));
+    setWindowTitle(QStringLiteral("Source Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
     resize(1460, 900);
     setMinimumSize(1080, 680);
     auto credit = new QPushButton(QStringLiteral("© 2026 Prof. ing. Raffaele Mele"));
@@ -111,7 +111,10 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     fileModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
     tree = new QTreeView;
     tree->setObjectName(QStringLiteral("projectTree"));
-    tree->setModel(fileModel);
+    projectFileFilter = new ProjectFileFilter(this);
+    projectFileFilter->setSourceModel(fileModel);
+    projectFileFilter->setExcluded(QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList());
+    tree->setModel(projectFileFilter);
     tree->setHeaderHidden(true);
     for (int i = 1; i < 4; ++i)
         tree->hideColumn(i);
@@ -119,12 +122,12 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     split->addWidget(files);
     connect(tree->selectionModel(), &QItemSelectionModel::currentChanged, this,
             [this](const QModelIndex &i) {
-                auto p = fileModel->filePath(i);
+                auto p = fileModel->filePath(projectFileFilter->mapToSource(i));
                 if (QFileInfo(p).isFile())
                     showPreview(p);
             });
     connect(tree, &QTreeView::doubleClicked, this, [this](const QModelIndex &i) {
-        auto p = fileModel->filePath(i);
+        auto p = fileModel->filePath(projectFileFilter->mapToSource(i));
         if (QFileInfo(p).isFile())
             openFile(p);
     });
@@ -166,15 +169,35 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     pathFilter->setPlaceholderText(ui(QStringLiteral("Filtra percorso · es. src/*.rs")));
     pathFilter->setClearButtonEnabled(true);
     sl->addWidget(pathFilter);
+    auto replaceToggle = new QToolButton;
+    replaceToggle->setObjectName(QStringLiteral("replaceToggle"));
+    replaceToggle->setText(ui(QStringLiteral("Mostra opzioni di sostituzione")));
+    replaceToggle->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    replaceToggle->setArrowType(Qt::RightArrow);
+    replaceToggle->setCheckable(true);
+    replaceToggle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    sl->addWidget(replaceToggle);
+    auto replaceArea = new QWidget;
+    replaceArea->setObjectName(QStringLiteral("replaceArea"));
+    auto replaceLayout = new QVBoxLayout(replaceArea);
+    replaceLayout->setContentsMargins(0, 0, 0, 0);
     replacement = new QLineEdit;
     replacement->setObjectName(QStringLiteral("replacement"));
     replacement->setPlaceholderText(ui(QStringLiteral("Sostituisci con…")));
     replacement->setToolTip(ui(QStringLiteral(
         "Regex: $1 o ${nome} per un gruppo; $$ per $. Testo vuoto: elimina le corrispondenze.")));
-    sl->addWidget(replacement);
+    replaceLayout->addWidget(replacement);
     replaceButton =
         button(ui(QStringLiteral("Anteprima sostituzione")), QStringLiteral("replacePreview"));
-    sl->addWidget(replaceButton);
+    replaceLayout->addWidget(replaceButton);
+    sl->addWidget(replaceArea);
+    replaceArea->hide();
+    connect(replaceToggle, &QToolButton::toggled, this, [replaceToggle, replaceArea](bool expanded) {
+        replaceArea->setVisible(expanded);
+        replaceToggle->setArrowType(expanded ? Qt::DownArrow : Qt::RightArrow);
+        replaceToggle->setText(ui(expanded ? QStringLiteral("Nascondi opzioni di sostituzione")
+                                            : QStringLiteral("Mostra opzioni di sostituzione")));
+    });
     connect(replaceButton, &QPushButton::clicked, this, &Window::planReplacement);
     auto selection = new QHBoxLayout;
     auto all = button(ui(QStringLiteral("Seleziona tutti")));
@@ -341,6 +364,9 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     actions->insertWidget(actions->count()-1, minimizeEditor);
     connect(minimizeEditor, &QToolButton::clicked, this, [=] { focusEditor->setChecked(false); contentVisible->setChecked(false); });
     auto settings = menuBar()->addMenu(ui(QStringLiteral("Preferenze")));
+    auto excludedAction = settings->addAction(ui(QStringLiteral("Estensioni escluse…")));
+    excludedAction->setObjectName(QStringLiteral("excludedExtensionsAction"));
+    connect(excludedAction, &QAction::triggered, this, &Window::manageExcludedExtensions);
     connect(settings->addAction(ui(QStringLiteral("Editor esterno…"))), &QAction::triggered, this,
             &Window::configureExternal);
     connect(settings->addAction(ui(QStringLiteral("Personalizza colori…"))), &QAction::triggered, this,
@@ -613,10 +639,10 @@ void Window::openProject(const QString &p) {
     QDir().mkpath(base);
     db = base + QStringLiteral("/index.sqlite");
     cancelFile = base + QStringLiteral("/cancel");
-    tree->setRootIndex(fileModel->setRootPath(root));
+    tree->setRootIndex(projectFileFilter->mapFromSource(fileModel->setRootPath(root)));
     projectLabel->setText(QFileInfo(root).fileName() + QStringLiteral("   /   ") + root);
     projectLabel->setToolTip(root);
-    setWindowTitle(QFileInfo(root).fileName() + QStringLiteral(" — Source Navigator"));
+    setWindowTitle(QFileInfo(root).fileName() + QStringLiteral(" — Source Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
     results->clear();
     currentResults = {};
     selectedPath.clear();
@@ -630,8 +656,18 @@ void Window::openProject(const QString &p) {
     if (cachedDiscovery.open(QIODevice::ReadOnly))
         discoveryCache = QJsonDocument::fromJson(cachedDiscovery.readAll()).object();
     extensions = settings.value(QStringLiteral("extensions")).toStringList();
+    const auto previousExtensions = extensions;
+    projectFileFilter->setExcluded(QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList());
+    const auto excludedList = QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList();
+    const QSet<QString> excluded(excludedList.cbegin(), excludedList.cend());
+    for (const auto &ext : previousExtensions)
+        if (excluded.contains(ext)) extensions.removeAll(ext);
+    if (extensions != previousExtensions)
+        settings.setValue(QStringLiteral("extensions"), extensions);
     if (extensions.isEmpty())
         discover();
+    else if (extensions != previousExtensions)
+        indexProject();
     else {
         state->setText(ui(QStringLiteral("Progetto aperto · F5 aggiorna l'indice")));
         search();
@@ -667,69 +703,135 @@ void Window::discover(bool refresh) {
         chooseFileTypes(o);
     });
 }
+class FileTypeItem : public QTreeWidgetItem {
+  public:
+    using QTreeWidgetItem::QTreeWidgetItem;
+    bool operator<(const QTreeWidgetItem &other) const override {
+        const int column = treeWidget()->sortColumn();
+        if (column == 1 || column == 2) {
+            const auto left = data(column, Qt::UserRole).toLongLong();
+            const auto right = other.data(column, Qt::UserRole).toLongLong();
+            if (left != right) return left < right;
+        } else if (column == 3 && checkState(3) != other.checkState(3)) {
+            return checkState(3) < other.checkState(3);
+        }
+        return QString::localeAwareCompare(text(0), other.text(0)) < 0;
+    }
+};
+void Window::manageExcludedExtensions() {
+    QDialog dialog(this);
+    dialog.setWindowTitle(ui(QStringLiteral("Estensioni escluse")));
+    dialog.setObjectName(QStringLiteral("excludedExtensionsDialog"));
+    dialog.resize(420, 420);
+    auto layout = new QVBoxLayout(&dialog);
+    auto info = new QLabel(ui(QStringLiteral("Le estensioni selezionate restano nascoste in tutti i progetti. Deseleziona quelle da ripristinare.")));
+    info->setWordWrap(true);
+    layout->addWidget(info);
+    auto list = new QTreeWidget;
+    list->setObjectName(QStringLiteral("excludedExtensionsList"));
+    list->setHeaderLabels({ui(QStringLiteral("Estensione"))});
+    layout->addWidget(list, 1);
+    const auto excluded = QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList();
+    for (const auto &ext : excluded) {
+        auto row = new QTreeWidgetItem(list, {ext});
+        row->setCheckState(0, Qt::Checked);
+    }
+    auto buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
+    buttons->button(QDialogButtonBox::Save)->setText(ui(QStringLiteral("Salva")));
+    layout->addWidget(buttons);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    if (dialog.exec() != QDialog::Accepted) return;
+    QStringList remaining;
+    for (int i = 0; i < list->topLevelItemCount(); ++i)
+        if (list->topLevelItem(i)->checkState(0) == Qt::Checked)
+            remaining << list->topLevelItem(i)->text(0);
+    QSettings().setValue(QStringLiteral("files/excludedExtensions"), remaining);
+    projectFileFilter->setExcluded(remaining);
+}
 void Window::chooseFileTypes(const QJsonObject &o) {
-        QDialog d(this);
-        d.setWindowTitle(ui(QStringLiteral("File da includere")));
-        d.resize(540, 570);
-        auto layout = new QVBoxLayout(&d);
-        auto info =
-            new QLabel(ui(QStringLiteral("Seleziona le estensioni da indicizzare.\nI file testuali "
-                                      "sono ricercabili anche senza parser di simboli.")));
-        info->setWordWrap(true);
-        layout->addWidget(info);
-        auto list = new QTreeWidget;
-        list->setHeaderLabels(
-            {ui(QStringLiteral("Estensione")), ui(QStringLiteral("File")), QStringLiteral("KiB")});
-        layout->addWidget(list, 1);
-        for (const auto &v : o.value(QStringLiteral("extensions")).toArray()) {
-            auto e = v.toObject();
-            auto ext = e.value(QStringLiteral("extension")).toString();
-            auto row = new QTreeWidgetItem(
-                list,
-                {ext, QString::number(e.value(QStringLiteral("files")).toInt()),
-                 QString::number(e.value(QStringLiteral("bytes")).toDouble() / 1024, 'f', 0)});
-            row->setData(0, Qt::UserRole, ext);
-            row->setCheckState(0,
-                               (extensions.isEmpty() ? e.value(QStringLiteral("selected")).toBool()
-                                                     : extensions.contains(ext))
-                                   ? Qt::Checked
-                                   : Qt::Unchecked);
-        }
-        auto summary = new QLabel(
-            ui(QStringLiteral(
-                "%1 file esclusi (binari, codifica, dimensione o accesso). %2 errori di scansione."))
-                .arg(o.value(QStringLiteral("skipped")).toInt())
-                .arg(o.value(QStringLiteral("errors")).toArray().size()));
-        summary->setWordWrap(true);
-        layout->addWidget(summary);
-        auto buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-        buttons->button(QDialogButtonBox::Ok)->setText(ui(QStringLiteral("Applica selezione")));
-        auto refresh = buttons->addButton(ui(QStringLiteral("Rianalizza cartelle")), QDialogButtonBox::ActionRole);
-        connect(refresh, &QPushButton::clicked, &d, [&d] { d.done(2); });
-        layout->addWidget(buttons);
-        connect(buttons, &QDialogButtonBox::accepted, &d, &QDialog::accept);
-        connect(buttons, &QDialogButtonBox::rejected, &d, &QDialog::reject);
-        const int result = d.exec();
-        if (result == 2) { discover(true); return; }
-        if (result != QDialog::Accepted)
-            return;
-        QStringList chosen;
-        for (int i = 0; i < list->topLevelItemCount(); ++i) {
-            auto row = list->topLevelItem(i);
-            if (row->checkState(0) == Qt::Checked)
-                chosen << row->data(0, Qt::UserRole).toString();
-        }
-        if (chosen.isEmpty()) {
-            state->setText(ui(QStringLiteral("Nessuna estensione selezionata")));
-            return;
-        }
-        if (chosen == extensions)
-            return;
-        extensions = chosen;
-        QSettings(QFileInfo(db).absolutePath() + QStringLiteral("/project.ini"),
-                  QSettings::IniFormat)
-            .setValue(QStringLiteral("extensions"), extensions);
-        indexProject();
+    QDialog dialog(this);
+    dialog.setWindowTitle(ui(QStringLiteral("File da includere")));
+    dialog.resize(670, 570);
+    auto layout = new QVBoxLayout(&dialog);
+    auto info = new QLabel(ui(QStringLiteral("Seleziona le estensioni da indicizzare.\nI file testuali sono ricercabili anche senza parser di simboli.")));
+    info->setWordWrap(true);
+    layout->addWidget(info);
+    auto list = new QTreeWidget;
+    list->setObjectName(QStringLiteral("fileTypeList"));
+    list->setHeaderLabels({ui(QStringLiteral("Estensione")), ui(QStringLiteral("File")),
+                           QStringLiteral("KiB"), ui(QStringLiteral("Escludi sempre"))});
+    list->header()->setSortIndicatorShown(true);
+    layout->addWidget(list, 1);
+    const auto excludedList = QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList();
+    const QSet<QString> excluded(excludedList.cbegin(), excludedList.cend());
+    for (const auto &value : o.value(QStringLiteral("extensions")).toArray()) {
+        const auto entry = value.toObject();
+        const auto ext = entry.value(QStringLiteral("extension")).toString();
+        if (excluded.contains(ext)) continue;
+        const auto count = entry.value(QStringLiteral("files")).toInt();
+        const auto bytes = qint64(entry.value(QStringLiteral("bytes")).toDouble());
+        auto row = new FileTypeItem(list, {ext, QString::number(count),
+                                           QString::number(bytes / 1024.0, 'f', 0), QString()});
+        row->setData(0, Qt::UserRole, ext);
+        row->setData(1, Qt::UserRole, count);
+        row->setData(2, Qt::UserRole, bytes);
+        row->setCheckState(0, (extensions.isEmpty() ? entry.value(QStringLiteral("selected")).toBool()
+                                                 : extensions.contains(ext)) ? Qt::Checked : Qt::Unchecked);
+        row->setCheckState(3, Qt::Unchecked);
+    }
+    list->setSortingEnabled(true);
+    list->sortByColumn(0, Qt::AscendingOrder);
+    connect(list, &QTreeWidget::itemChanged, &dialog, [list](QTreeWidgetItem *item, int column) {
+        if (column == 3 && item->checkState(3) == Qt::Checked)
+            item->setCheckState(0, Qt::Unchecked);
+        else if (column == 0 && item->checkState(0) == Qt::Checked)
+            item->setCheckState(3, Qt::Unchecked);
+    });
+    auto summary = new QLabel(ui(QStringLiteral("%1 file esclusi (binari, codifica, dimensione o accesso). %2 errori di scansione."))
+                                  .arg(o.value(QStringLiteral("skipped")).toInt())
+                                  .arg(o.value(QStringLiteral("errors")).toArray().size()));
+    summary->setWordWrap(true);
+    layout->addWidget(summary);
+    auto buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttons->button(QDialogButtonBox::Ok)->setText(ui(QStringLiteral("Applica selezione")));
+    auto refresh = buttons->addButton(ui(QStringLiteral("Rianalizza cartelle")), QDialogButtonBox::ActionRole);
+    connect(refresh, &QPushButton::clicked, &dialog, [&dialog] { dialog.done(2); });
+    layout->addWidget(buttons);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    const int result = dialog.exec();
+    if (result == 2) { discover(true); return; }
+    if (result != QDialog::Accepted) return;
+    QStringList chosen, newlyExcluded;
+    for (int i = 0; i < list->topLevelItemCount(); ++i) {
+        auto row = list->topLevelItem(i);
+        const auto ext = row->data(0, Qt::UserRole).toString();
+        if (row->checkState(3) == Qt::Checked) newlyExcluded << ext;
+        else if (row->checkState(0) == Qt::Checked) chosen << ext;
+    }
+    if (chosen.isEmpty()) {
+        state->setText(ui(QStringLiteral("Nessuna estensione selezionata")));
+        return;
+    }
+    QStringList allExcluded = excludedList;
+    for (const auto &ext : newlyExcluded)
+        if (!allExcluded.contains(ext)) allExcluded << ext;
+    allExcluded.sort(Qt::CaseInsensitive);
+    QSettings().setValue(QStringLiteral("files/excludedExtensions"), allExcluded);
+    projectFileFilter->setExcluded(allExcluded);
+    if (!newlyExcluded.isEmpty()) {
+        results->clear();
+        currentResults = {};
+    }
+    const QSet<QString> selectedBefore(extensions.cbegin(), extensions.cend());
+    const QSet<QString> selectedAfter(chosen.cbegin(), chosen.cend());
+    if (selectedBefore == selectedAfter) return;
+    chosen.sort(Qt::CaseInsensitive);
+    extensions = chosen;
+    QSettings(QFileInfo(db).absolutePath() + QStringLiteral("/project.ini"), QSettings::IniFormat)
+        .setValue(QStringLiteral("extensions"), extensions);
+    indexProject();
 }
 void Window::indexProject() {
     if (root.isEmpty() || operation)
