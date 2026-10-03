@@ -1,10 +1,15 @@
 """Validate the packaged application with no development runtime on PATH."""
+import argparse
 import json
 import os
 from pathlib import Path
 import subprocess
 
 base=Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser()
+parser.add_argument('--dist', type=Path, default=base/'dist')
+args=parser.parse_args()
+distribution=args.dist.resolve()
 output=base/'test-output/packaged'
 output.mkdir(parents=True,exist_ok=True)
 env=os.environ.copy()
@@ -13,8 +18,8 @@ env.pop('QT_PLUGIN_PATH',None)
 env['QT_QPA_PLATFORM']='offscreen'
 env['QT_QPA_FONTDIR']='C:/Windows/Fonts'
 env['SN_DATA_DIR']=str(output/'profile')
-exe=base/'dist/source-navigator.exe'
-p=subprocess.run([str(exe),'--theme','3','--file',str(base/'dist/demo/catalog.cpp'),'--capture',str(output/'startup.png')],env=env,timeout=25,capture_output=True)
+exe=distribution/'source-navigator.exe'
+p=subprocess.run([str(exe),'--theme','3','--file',str(distribution/'demo/catalog.cpp'),'--capture',str(output/'startup.png')],env=env,timeout=25,capture_output=True)
 assert p.returncode==0,(p.returncode,p.stderr)
 assert (output/'startup.png').stat().st_size>10000
 before=set((output/'profile/logs').glob('crash-*'))

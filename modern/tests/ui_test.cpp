@@ -12,6 +12,13 @@
 #include <QJsonDocument>
 #include <QTemporaryDir>
 #include <QtTest>
+class FolderUrlRecorder : public QObject {
+    Q_OBJECT
+  public:
+    QUrl opened;
+  public slots:
+    void capture(const QUrl &url) { opened = url; }
+};
 class UiTest : public QObject {
     Q_OBJECT
   private slots:
@@ -293,6 +300,8 @@ class UiTest : public QObject {
         auto tabs = window.findChild<QTabWidget *>(QStringLiteral("editorTabs"));
         auto preview = window.findChild<Editor *>(QStringLiteral("previewEditor"));
         scope->setCurrentIndex(2);
+        auto folderButton = window.findChild<QPushButton *>(QStringLiteral("openFolder"));
+        QVERIFY(folderButton && folderButton->isVisible() && !folderButton->isEnabled());
         QCOMPARE(mode->currentData().toString(), QStringLiteral("glob"));
         QVERIFY(!window.findChild<QToolButton *>(QStringLiteral("replaceToggle"))->isVisible());
         QVERIFY(!window.findChild<QCheckBox *>(QStringLiteral("wholeWords"))->isEnabled());
@@ -304,6 +313,12 @@ class UiTest : public QObject {
         results->setCurrentItem(results->topLevelItem(0));
         QCOMPARE(preview->path(), QFileInfo(root + QStringLiteral("/src/core/sample.cpp")).canonicalFilePath());
         QVERIFY(preview->bytes().contains("sample preview"));
+        QVERIFY(folderButton->isEnabled());
+        FolderUrlRecorder recorder;
+        QDesktopServices::setUrlHandler(QStringLiteral("file"), &recorder, "capture");
+        folderButton->click();
+        QDesktopServices::unsetUrlHandler(QStringLiteral("file"));
+        QCOMPARE(QDir::cleanPath(recorder.opened.toLocalFile()), QDir::cleanPath(root + QStringLiteral("/src/core")));
         window.findChild<QPushButton *>(QStringLiteral("openMatchedFiles"))->click();
         QCOMPARE(tabs->count(), 2);
         QVERIFY(!qobject_cast<Editor *>(tabs->currentWidget())->send(SCI_GETREADONLY));
@@ -320,6 +335,7 @@ class UiTest : public QObject {
         results->setCurrentItem(results->topLevelItem(0));
         QVERIFY(preview->bytes().isEmpty());
         scope->setCurrentIndex(0);
+        QVERIFY(!folderButton->isVisible());
         QVERIFY(window.findChild<QToolButton *>(QStringLiteral("replaceToggle"))->isVisible());
         QVERIFY(window.findChild<QCheckBox *>(QStringLiteral("wholeWords"))->isEnabled());
         QCOMPARE(mode->currentData().toString(), QStringLiteral("literal"));

@@ -213,7 +213,22 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     sl->addLayout(selection);
     openMatchedFiles = button(ui(QStringLiteral("Apri file selezionati")), QStringLiteral("openMatchedFiles"));
     openMatchedFiles->hide();
-    sl->addWidget(openMatchedFiles);
+    openFolder = button(ui(QStringLiteral("Apri cartella")), QStringLiteral("openFolder"));
+    openFolder->setToolTip(ui(QStringLiteral("Apri la cartella del file selezionato")));
+    openFolder->setEnabled(false);
+    openFolder->hide();
+    auto fileActions = new QHBoxLayout;
+    fileActions->addWidget(openMatchedFiles, 1);
+    fileActions->addWidget(openFolder);
+    sl->addLayout(fileActions);
+    connect(openFolder, &QPushButton::clicked, this, [this] {
+        auto item = results->currentItem();
+        if (!item || searchScope->currentIndex() != 2) return;
+        const auto file = item->data(0, Qt::UserRole).toJsonObject().value(QStringLiteral("path")).toString();
+        const auto directory = QFileInfo(QDir(root).filePath(file)).absolutePath();
+        if (!QFileInfo(directory).isDir() || !QDesktopServices::openUrl(QUrl::fromLocalFile(directory)))
+            QMessageBox::warning(this, ui(QStringLiteral("Apri cartella")), ui(QStringLiteral("Impossibile aprire la cartella selezionata.")));
+    });
     connect(openMatchedFiles, &QPushButton::clicked, this, [this] {
         if (operation || searchScope->currentIndex() != 2) return;
         QStringList paths;
@@ -246,6 +261,7 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
                 results->topLevelItem(i)->setCheckState(0, pair.second);
         });
     connect(results, &QTreeWidget::currentItemChanged, this, [this](QTreeWidgetItem *item) {
+        openFolder->setEnabled(item && searchScope->currentIndex() == 2);
         if (!item)
             return;
         auto o = item->data(0, Qt::UserRole).toJsonObject();
@@ -539,6 +555,8 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
         replaceArea->setVisible(scope == 0 && replaceToggle->isChecked());
         replacement->setEnabled(scope == 0);
         openMatchedFiles->setVisible(names);
+        openFolder->setVisible(names);
+        openFolder->setEnabled(names && results->currentItem());
         openMatchedFiles->setEnabled(!operation);
         fileSearchHint->setVisible(names);
         all->setVisible(scope != 1);

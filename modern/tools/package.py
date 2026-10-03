@@ -10,10 +10,11 @@ import subprocess
 base = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument("--qt-prefix", default=str(base / "dependencies/mingw64"))
+parser.add_argument("--output-dir", type=Path, default=base / "dist")
 args = parser.parse_args()
 prefix = Path(args.qt_prefix)
-dest = base / "dist"
-dest.mkdir(exist_ok=True)
+dest = args.output_dir.resolve()
+dest.mkdir(parents=True, exist_ok=True)
 shutil.copytree(base / "assets", dest / "assets", dirs_exist_ok=True)
 for source in [base / "build/source-navigator.exe", base / "core/target/release/sn-index.exe"]:
     shutil.copy2(source, dest / source.name)

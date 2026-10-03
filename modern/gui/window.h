@@ -33,7 +33,7 @@ class Window : public QMainWindow {
     QPlainTextEdit *diagnostics;
     QLabel *state, *projectLabel, *resultLabel, *previewLabel;
     QProgressBar *progress;
-    QPushButton *replaceButton, *openMatchedFiles;
+    QPushButton *replaceButton, *openMatchedFiles, *openFolder;
     QToolButton *replaceToggle;
     QWidget *replaceArea;
     QProcess *operation = nullptr, *queryProcess = nullptr;

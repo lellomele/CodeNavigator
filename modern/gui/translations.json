@@ -1168,5 +1168,20 @@
     "en": "\n%1 entries could not be accessed; see Diagnostics.",
     "fr": "\n%1 entrées inaccessibles ; consultez Diagnostic.",
     "de": "\n%1 Einträge nicht zugänglich; siehe Diagnose."
+  },
+  "Apri cartella": {
+    "en": "Open folder",
+    "fr": "Ouvrir le dossier",
+    "de": "Ordner öffnen"
+  },
+  "Apri la cartella del file selezionato": {
+    "en": "Open the selected file’s folder",
+    "fr": "Ouvrir le dossier du fichier sélectionné",
+    "de": "Ordner der ausgewählten Datei öffnen"
+  },
+  "Impossibile aprire la cartella selezionata.": {
+    "en": "Unable to open the selected folder.",
+    "fr": "Impossible d’ouvrir le dossier sélectionné.",
+    "de": "Der ausgewählte Ordner kann nicht geöffnet werden."
   }
 }
