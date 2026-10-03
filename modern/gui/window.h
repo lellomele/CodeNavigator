@@ -33,7 +33,9 @@ class Window : public QMainWindow {
     QPlainTextEdit *diagnostics;
     QLabel *state, *projectLabel, *resultLabel, *previewLabel;
     QProgressBar *progress;
-    QPushButton *replaceButton;
+    QPushButton *replaceButton, *openMatchedFiles;
+    QToolButton *replaceToggle;
+    QWidget *replaceArea;
     QProcess *operation = nullptr, *queryProcess = nullptr;
     QTimer searchTimer, draftTimer;
     QJsonArray currentResults;
@@ -45,6 +47,7 @@ class Window : public QMainWindow {
     void indexProject();
     void cancelOperation();
     void search();
+    void scheduleSearch();
     void showPreview(const QString &, int = 1, int = 0);
     void showResults(const QJsonObject &);
     void planReplacement(bool printOnly = false);

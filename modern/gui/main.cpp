@@ -48,7 +48,8 @@ static void diagnosticMessage(QtMsgType type, const QMessageLogContext &context,
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("SourceNavigator"));
-    app.setApplicationName(QStringLiteral("SourceNavigator"));
+    app.setApplicationName(QStringLiteral("SourceNavigator")); // Stable identifier preserves settings, indexes and drafts.
+    app.setApplicationDisplayName(QStringLiteral("Code Navigator"));
     app.setApplicationVersion(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION));
     app.setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
     app.setFont(QFont(QStringLiteral("Segoe UI"), 10));

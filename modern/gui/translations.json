@@ -144,11 +144,6 @@
     "fr": "À propos…",
     "de": "Über…"
   },
-  "Informazioni su Source Navigator": {
-    "en": "About Source Navigator",
-    "fr": "À propos de Source Navigator",
-    "de": "Über Source Navigator"
-  },
   "Riferimenti incrociati…": {
     "en": "Cross-references…",
     "fr": "Références croisées…",
@@ -914,11 +909,6 @@
     "fr": "Analyse syntaxique du dernier index : les symboles homonymes ne sont pas résolus sémantiquement. Macros, surcharges et appels dynamiques peuvent donner des résultats incomplets. F5 actualise l’index. Langages : C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP.",
     "de": "Syntaktische Analyse des letzten Index: gleichnamige Symbole werden nicht semantisch aufgelöst. Makros, Überladungen und dynamische Aufrufe können unvollständige Ergebnisse liefern. F5 aktualisiert den Index. Sprachen: C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP."
   },
-  "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser inclusi nella distribuzione.<br>Licenze: cartella licenses della distribuzione.": {
-    "en": "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parsers included in the distribution.<br>Licenses: distribution licenses folder.",
-    "fr": "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Analyseurs inclus dans la distribution.<br>Licences : dossier licenses de la distribution.",
-    "de": "Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser in der Distribution enthalten.<br>Lizenzen: Ordner licenses der Distribution."
-  },
   "%1 file da modificare. Tutte le corrispondenze nei file selezionati saranno sostituite.\nOriginali disponibili in Strumenti → Ripristina sostituzione. Anteprima: prime 200 righe modificate per file.": {
     "en": "%1 files to modify. All matches in selected files will be replaced.\nOriginals available in Tools → Undo replacement. Preview: first 200 modified lines per file.",
     "fr": "%1 fichiers à modifier. Toutes les correspondances des fichiers sélectionnés seront remplacées.\nOriginaux disponibles via Outils → Annuler le remplacement. Aperçu : 200 premières lignes modifiées par fichier.",
@@ -1118,12 +1108,65 @@
     "en": "Always exclude",
     "fr": "Toujours exclure",
     "de": "Immer ausschließen"
-  }
-,
+  },
   "Nascondi opzioni di sostituzione": {
     "en": "Hide replace options",
     "fr": "Masquer les options de remplacement",
     "de": "Ersetzungsoptionen ausblenden"
+  },
+  "Informazioni su Code Navigator": {
+    "en": "About Code Navigator",
+    "fr": "À propos de Code Navigator",
+    "de": "Über Code Navigator"
+  },
+  "Code Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Ispirato a Source-Navigator 4.5.<br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser inclusi nella distribuzione.<br>Licenze: cartella licenses della distribuzione.": {
+    "en": "Code Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Inspired by Source-Navigator 4.5.<br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parsers included in the distribution.<br>Licenses: distribution licenses folder.",
+    "fr": "Code Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Inspiré de Source-Navigator 4.5.<br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Analyseurs inclus dans la distribution.<br>Licences : dossier licenses de la distribution.",
+    "de": "Code Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Inspiriert von Source-Navigator 4.5.<br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser in der Distribution enthalten.<br>Lizenzen: Ordner licenses der Distribution."
+  },
+  "Contenuto dei file": {
+    "en": "File contents",
+    "fr": "Contenu des fichiers",
+    "de": "Dateiinhalte"
+  },
+  "Simboli": {
+    "en": "Symbols",
+    "fr": "Symboles",
+    "de": "Symbole"
+  },
+  "Nomi dei file": {
+    "en": "File names",
+    "fr": "Noms des fichiers",
+    "de": "Dateinamen"
+  },
+  "Nomi: *.cpp o test?.rs. Percorsi: src/*test*.cpp. Un clic mostra l’anteprima; un doppio clic apre l’editor.": {
+    "en": "Names: *.cpp or test?.rs. Paths: src/*test*.cpp. Click to preview; double-click to open the editor.",
+    "fr": "Noms : *.cpp ou test?.rs. Chemins : src/*test*.cpp. Un clic affiche l’aperçu ; un double clic ouvre l’éditeur.",
+    "de": "Namen: *.cpp oder test?.rs. Pfade: src/*test*.cpp. Ein Klick zeigt die Vorschau; ein Doppelklick öffnet den Editor."
+  },
+  "Apri file selezionati": {
+    "en": "Open selected files",
+    "fr": "Ouvrir les fichiers sélectionnés",
+    "de": "Ausgewählte Dateien öffnen"
+  },
+  "Seleziona al massimo 32 file per apertura.": {
+    "en": "Select at most 32 files to open at once.",
+    "fr": "Sélectionnez au maximum 32 fichiers à ouvrir à la fois.",
+    "de": "Wählen Sie höchstens 32 Dateien zum gleichzeitigen Öffnen aus."
+  },
+  "Nome file… · *.cpp · src/*test*.rs": {
+    "en": "File name… · *.cpp · src/*test*.rs",
+    "fr": "Nom de fichier… · *.cpp · src/*test*.rs",
+    "de": "Dateiname… · *.cpp · src/*test*.rs"
+  },
+  "%1 file · %2 ms%3%4": {
+    "en": "%1 files · %2 ms%3%4",
+    "fr": "%1 fichiers · %2 ms%3%4",
+    "de": "%1 Dateien · %2 ms%3%4"
+  },
+  "\n%1 voci non accessibili; consulta Diagnostica.": {
+    "en": "\n%1 entries could not be accessed; see Diagnostics.",
+    "fr": "\n%1 entrées inaccessibles ; consultez Diagnostic.",
+    "de": "\n%1 Einträge nicht zugänglich; siehe Diagnose."
   }
-
 }

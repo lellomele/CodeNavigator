@@ -19,7 +19,7 @@ static QString readError(const QByteArray &bytes) {
         .toString(QString::fromUtf8(bytes));
 }
 Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
-    setWindowTitle(QStringLiteral("Source Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
+    setWindowTitle(QStringLiteral("Code Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
     resize(1460, 900);
     setMinimumSize(1080, 680);
     auto credit = new QPushButton(QStringLiteral("© 2026 Prof. ing. Raffaele Mele"));
@@ -63,7 +63,7 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     auto head = new QHBoxLayout(hero);
     head->setContentsMargins(20, 16, 20, 16);
     auto titles = new QVBoxLayout;
-    auto title = new QLabel(QStringLiteral("SOURCE  /  NAVIGATOR"));
+    auto title = new QLabel(QStringLiteral("CODE  /  NAVIGATOR"));
     title->setObjectName(QStringLiteral("brand"));
     projectLabel = new QLabel(
         ui(QStringLiteral("Esplora il codice. Trova ciò che serve. Modifica con controllo.")));
@@ -139,6 +139,11 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     auto st = new QLabel(ui(QStringLiteral("CERCA & SOSTITUISCI")));
     st->setObjectName(QStringLiteral("section"));
     sl->addWidget(st);
+    searchScope = new QComboBox;
+    searchScope->addItems({ui(QStringLiteral("Contenuto dei file")), ui(QStringLiteral("Simboli")),
+                           ui(QStringLiteral("Nomi dei file"))});
+    searchScope->setObjectName(QStringLiteral("searchScope"));
+    sl->addWidget(searchScope);
     pattern = new QLineEdit;
     pattern->setObjectName(QStringLiteral("searchPattern"));
     pattern->setPlaceholderText(ui(QStringLiteral("Cerca nel progetto…  Ctrl+Shift+F")));
@@ -150,17 +155,13 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     mode->addItem(QStringLiteral("Wildcard"), QStringLiteral("glob"));
     mode->addItem(QStringLiteral("Regex"), QStringLiteral("regex"));
     mode->setObjectName(QStringLiteral("searchMode"));
-    searchScope = new QComboBox;
-    searchScope->addItems({ui(QStringLiteral("Nei file")), ui(QStringLiteral("Nei simboli"))});
-    searchScope->setObjectName(QStringLiteral("searchScope"));
     caseSensitive = new QCheckBox(QStringLiteral("Aa"));
     caseSensitive->setToolTip(ui(QStringLiteral("Distingui maiuscole e minuscole")));
     caseSensitive->setObjectName(QStringLiteral("caseSensitive"));
     wholeWords = new QCheckBox(ui(QStringLiteral("Parole intere")));
     wholeWords->setObjectName(QStringLiteral("wholeWords"));
     wholeWords->setToolTip(ui(QStringLiteral("Confini di parola Unicode; lettere, cifre e underscore appartengono alla parola. Disponibile anche con wildcard e regex.")));
-    options->addWidget(mode);
-    options->addWidget(searchScope, 1);
+    options->addWidget(mode, 1);
     options->addWidget(caseSensitive);
     options->addWidget(wholeWords);
     sl->addLayout(options);
@@ -169,7 +170,7 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     pathFilter->setPlaceholderText(ui(QStringLiteral("Filtra percorso · es. src/*.rs")));
     pathFilter->setClearButtonEnabled(true);
     sl->addWidget(pathFilter);
-    auto replaceToggle = new QToolButton;
+    replaceToggle = new QToolButton;
     replaceToggle->setObjectName(QStringLiteral("replaceToggle"));
     replaceToggle->setText(ui(QStringLiteral("Mostra opzioni di sostituzione")));
     replaceToggle->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -177,7 +178,7 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     replaceToggle->setCheckable(true);
     replaceToggle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     sl->addWidget(replaceToggle);
-    auto replaceArea = new QWidget;
+    replaceArea = new QWidget;
     replaceArea->setObjectName(QStringLiteral("replaceArea"));
     auto replaceLayout = new QVBoxLayout(replaceArea);
     replaceLayout->setContentsMargins(0, 0, 0, 0);
@@ -192,19 +193,43 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     replaceLayout->addWidget(replaceButton);
     sl->addWidget(replaceArea);
     replaceArea->hide();
-    connect(replaceToggle, &QToolButton::toggled, this, [replaceToggle, replaceArea](bool expanded) {
-        replaceArea->setVisible(expanded);
+    connect(replaceToggle, &QToolButton::toggled, this, [this](bool expanded) {
+        replaceArea->setVisible(expanded && searchScope->currentIndex() == 0);
         replaceToggle->setArrowType(expanded ? Qt::DownArrow : Qt::RightArrow);
         replaceToggle->setText(ui(expanded ? QStringLiteral("Nascondi opzioni di sostituzione")
                                             : QStringLiteral("Mostra opzioni di sostituzione")));
     });
     connect(replaceButton, &QPushButton::clicked, this, &Window::planReplacement);
+    auto fileSearchHint = new QLabel(ui(QStringLiteral("Nomi: *.cpp o test?.rs. Percorsi: src/*test*.cpp. Un clic mostra l’anteprima; un doppio clic apre l’editor.")));
+    fileSearchHint->setObjectName(QStringLiteral("fileSearchHint"));
+    fileSearchHint->setWordWrap(true);
+    fileSearchHint->hide();
+    sl->addWidget(fileSearchHint);
     auto selection = new QHBoxLayout;
     auto all = button(ui(QStringLiteral("Seleziona tutti")));
     auto none = button(ui(QStringLiteral("Nessuno")));
     selection->addWidget(all);
     selection->addWidget(none);
     sl->addLayout(selection);
+    openMatchedFiles = button(ui(QStringLiteral("Apri file selezionati")), QStringLiteral("openMatchedFiles"));
+    openMatchedFiles->hide();
+    sl->addWidget(openMatchedFiles);
+    connect(openMatchedFiles, &QPushButton::clicked, this, [this] {
+        if (operation || searchScope->currentIndex() != 2) return;
+        QStringList paths;
+        for (int i = 0; i < results->topLevelItemCount(); ++i) {
+            auto item = results->topLevelItem(i);
+            if (item->checkState(0) == Qt::Checked)
+                paths << item->data(0, Qt::UserRole).toJsonObject().value(QStringLiteral("path")).toString();
+        }
+        if (paths.isEmpty() && results->currentItem())
+            paths << results->currentItem()->data(0, Qt::UserRole).toJsonObject().value(QStringLiteral("path")).toString();
+        if (paths.size() > 32) {
+            QMessageBox::information(this, ui(QStringLiteral("Apertura file")), ui(QStringLiteral("Seleziona al massimo 32 file per apertura.")));
+            return;
+        }
+        for (const auto &path : paths) openFile(QDir(root).filePath(path));
+    });
     resultLabel = new QLabel(ui(QStringLiteral("I risultati appariranno qui")));
     resultLabel->setWordWrap(true);
     resultLabel->setObjectName(QStringLiteral("subtitle"));
@@ -456,8 +481,8 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
                     "Windows-1252; massimo 32 MiB.")));
         });
     connect(help->addAction(ui(QStringLiteral("Informazioni su…"))), &QAction::triggered, this, [this] {
-        QMessageBox::about(this, ui(QStringLiteral("Informazioni su Source Navigator")),
-            ui(QStringLiteral("Source Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser inclusi nella distribuzione.<br>Licenze: cartella licenses della distribuzione.")).arg(QCoreApplication::applicationVersion()));
+        QMessageBox::about(this, ui(QStringLiteral("Informazioni su Code Navigator")),
+            ui(QStringLiteral("Code Navigator %1<br>© 2026 Prof. ing. Raffaele Mele<br><a href='https://infotechlab.altervista.org/'>InfoTechLab</a><br>Ispirato a Source-Navigator 4.5.<br>Qt 6 · Rust · SQLite · Scintilla / Lexilla<br>Parser inclusi nella distribuzione.<br>Licenze: cartella licenses della distribuzione.")).arg(QCoreApplication::applicationVersion()));
     });
     state = new QLabel(ui(QStringLiteral("Scegli una directory radice per iniziare")));
     progress = new QProgressBar;
@@ -497,27 +522,32 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     searchTimer.setInterval(160);
     connect(&searchTimer, &QTimer::timeout, this, &Window::search);
     for (auto e : {pattern, pathFilter})
-        connect(e, &QLineEdit::textChanged, this, [this] {
-            results->clear();
-            currentResults = {};
-            replaceButton->setEnabled(false);
-            searchTimer.start();
-        });
-    for (auto c : {mode, searchScope})
-        connect(c, &QComboBox::currentIndexChanged, this, [this] {
-            results->clear();
-            currentResults = {};
-            replacement->setEnabled(searchScope->currentIndex() == 0);
-            replaceButton->setEnabled(false);
-            searchTimer.start();
-        });
-    for (auto check : {caseSensitive, wholeWords})
-    connect(check, &QCheckBox::toggled, this, [this] {
-        results->clear();
-        currentResults = {};
-        replaceButton->setEnabled(false);
-        searchTimer.start();
+        connect(e, &QLineEdit::textChanged, this, &Window::scheduleSearch);
+    auto searchModes = std::make_shared<QList<int>>(QList<int>{0, 0, 1});
+    connect(mode, &QComboBox::currentIndexChanged, this, [this, searchModes](int index) {
+        (*searchModes)[searchScope->currentIndex()] = index;
+        scheduleSearch();
     });
+    connect(searchScope, &QComboBox::currentIndexChanged, this,
+            [this, searchModes, fileSearchHint, all, none](int scope) {
+        const bool names = scope == 2;
+        QSignalBlocker blocked(mode);
+        mode->setCurrentIndex((*searchModes)[scope]);
+        pattern->setPlaceholderText(names ? ui(QStringLiteral("Nome file… · *.cpp · src/*test*.rs"))
+                                         : ui(QStringLiteral("Cerca nel progetto…  Ctrl+Shift+F")));
+        replaceToggle->setVisible(scope == 0);
+        replaceArea->setVisible(scope == 0 && replaceToggle->isChecked());
+        replacement->setEnabled(scope == 0);
+        openMatchedFiles->setVisible(names);
+        openMatchedFiles->setEnabled(!operation);
+        fileSearchHint->setVisible(names);
+        all->setVisible(scope != 1);
+        none->setVisible(scope != 1);
+        wholeWords->setEnabled(!names);
+        scheduleSearch();
+    });
+    for (auto check : {caseSensitive, wholeWords})
+        connect(check, &QCheckBox::toggled, this, &Window::scheduleSearch);
     draftTimer.setInterval(10000);
     connect(&draftTimer, &QTimer::timeout, this, [this] {
         for (int i = 1; i < tabs->count(); ++i)
@@ -548,6 +578,7 @@ void Window::run(const QStringList &args, std::function<void(const QJsonObject &
     auto p = new QProcess(this);
     operation = p;
     tabs->setEnabled(false);
+    openMatchedFiles->setEnabled(false);
     replaceButton->setEnabled(false);
     progress->setRange(0, 0);
     progress->show();
@@ -571,6 +602,7 @@ void Window::run(const QStringList &args, std::function<void(const QJsonObject &
             state->setText(p->errorString());
             operation = nullptr;
             tabs->setEnabled(true);
+            openMatchedFiles->setEnabled(true);
             progress->hide();
             replaceButton->setEnabled(searchScope->currentIndex() == 0);
             p->deleteLater();
@@ -582,6 +614,7 @@ void Window::run(const QStringList &args, std::function<void(const QJsonObject &
                 *errors += p->readAllStandardError();
                 operation = nullptr;
                 tabs->setEnabled(true);
+                openMatchedFiles->setEnabled(true);
                 progress->hide();
                 replaceButton->setEnabled(searchScope->currentIndex() == 0);
                 p->deleteLater();
@@ -642,7 +675,7 @@ void Window::openProject(const QString &p) {
     tree->setRootIndex(projectFileFilter->mapFromSource(fileModel->setRootPath(root)));
     projectLabel->setText(QFileInfo(root).fileName() + QStringLiteral("   /   ") + root);
     projectLabel->setToolTip(root);
-    setWindowTitle(QFileInfo(root).fileName() + QStringLiteral(" — Source Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
+    setWindowTitle(QFileInfo(root).fileName() + QStringLiteral(" — Code Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
     results->clear();
     currentResults = {};
     selectedPath.clear();
@@ -802,7 +835,10 @@ void Window::chooseFileTypes(const QJsonObject &o) {
     connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
     const int result = dialog.exec();
     if (result == 2) { discover(true); return; }
-    if (result != QDialog::Accepted) return;
+    if (result != QDialog::Accepted) {
+        state->setText(ui(QStringLiteral("Progetto aperto · F5 aggiorna l'indice")));
+        return;
+    }
     QStringList chosen, newlyExcluded;
     for (int i = 0; i < list->topLevelItemCount(); ++i) {
         auto row = list->topLevelItem(i);
@@ -871,6 +907,18 @@ void Window::cancelOperation() {
         operation->kill();
     }
 }
+void Window::scheduleSearch() {
+    if (queryProcess) {
+        queryProcess->disconnect(this);
+        queryProcess->kill();
+        queryProcess->deleteLater();
+        queryProcess = nullptr;
+    }
+    results->clear();
+    currentResults = {};
+    replaceButton->setEnabled(false);
+    searchTimer.start();
+}
 void Window::search() {
     searchTimer.stop();
     if (queryProcess) {
@@ -879,7 +927,8 @@ void Window::search() {
         queryProcess->deleteLater();
         queryProcess = nullptr;
     }
-    if (db.isEmpty() || !QFileInfo::exists(db) || pattern->text().isEmpty()) {
+    const bool fileSearch = searchScope->currentIndex() == 2;
+    if (root.isEmpty() || (!fileSearch && (db.isEmpty() || !QFileInfo::exists(db) || pattern->text().isEmpty()))) {
         results->clear();
         currentResults = {};
         resultLabel->setText(ui(QStringLiteral("Inserisci il testo da cercare")));
@@ -892,7 +941,8 @@ void Window::search() {
     connect(p, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this,
             [this, p, started](int code, QProcess::ExitStatus status) {
                 if (code || status == QProcess::CrashExit) {
-                    auto error = readError(p->readAllStandardError());
+                    auto error = p->property("timedOut").toBool() ? ui(QStringLiteral("Tempo limite superato"))
+                                                                : readError(p->readAllStandardError());
                     resultLabel->setText(uiLanguage()==QStringLiteral("it") ? error : ui(QStringLiteral("Operazione non completata. Consulta i dettagli diagnostici.")));
                     results->clear();
                     currentResults = {};
@@ -913,28 +963,51 @@ void Window::search() {
             p->deleteLater();
         }
     });
-    QStringList args = {searchScope->currentIndex() == 0 ? QStringLiteral("grep")
-                                                         : QStringLiteral("query"),
-                        QStringLiteral("--db"),
-                        db,
-                        QStringLiteral("--pattern"),
-                        pattern->text(),
-                        QStringLiteral("--mode"),
-                        mode->currentData().toString(),
-                        QStringLiteral("--path"),
-                        pathFilter->text(),
-                        QStringLiteral("--limit"),
-                        QStringLiteral("5000")};
-    if (wholeWords->isChecked())
+    QStringList args;
+    if (fileSearch) {
+        args << QStringLiteral("find-files") << QStringLiteral("--root") << root;
+        for (const auto &ext : QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList())
+            args << QStringLiteral("--exclude-extension") << ext;
+    } else {
+        args << (searchScope->currentIndex() == 0 ? QStringLiteral("grep") : QStringLiteral("query"))
+             << QStringLiteral("--db") << db;
+    }
+    args << QStringLiteral("--pattern") << (fileSearch && pattern->text().isEmpty() && mode->currentData().toString() == QStringLiteral("glob") ? QStringLiteral("*") : pattern->text())
+         << QStringLiteral("--mode") << mode->currentData().toString()
+         << QStringLiteral("--path") << pathFilter->text()
+         << QStringLiteral("--limit") << QStringLiteral("5000");
+    if (wholeWords->isChecked() && !fileSearch)
         args << QStringLiteral("--whole-words");
     if (caseSensitive->isChecked())
         args << QStringLiteral("--case-sensitive");
+    if (fileSearch) QTimer::singleShot(15000, p, [p] {
+        if (p->state() != QProcess::NotRunning) {
+            p->setProperty("timedOut", true);
+            p->kill();
+        }
+    });
     p->start(engine, args);
 }
 void Window::showResults(const QJsonObject &o) {
     replaceButton->setEnabled(!operation && searchScope->currentIndex() == 0);
     currentResults = o.value(QStringLiteral("results")).toArray();
     results->clear();
+    if (o.value(QStringLiteral("event")).toString() == QStringLiteral("file_results")) {
+        for (const auto &value : currentResults) {
+            const auto file = value.toObject();
+            auto item = new QTreeWidgetItem(results, {file.value(QStringLiteral("path")).toString()});
+            item->setData(0, Qt::UserRole, file);
+            item->setCheckState(0, Qt::Unchecked);
+            item->setToolTip(0, item->text(0));
+        }
+        resultLabel->setText(ui(QStringLiteral("%1 file · %2 ms%3%4"))
+            .arg(currentResults.size()).arg(o.value(QStringLiteral("ui_ms")).toInt())
+            .arg(o.value(QStringLiteral("truncated")).toBool() ? ui(QStringLiteral("\nRisultati parziali: affina la ricerca.")) : QString())
+            .arg(o.value(QStringLiteral("skipped")).toInt() ? ui(QStringLiteral("\n%1 voci non accessibili; consulta Diagnostica.")).arg(o.value(QStringLiteral("skipped")).toInt()) : QString()));
+        for (const auto &error : o.value(QStringLiteral("errors")).toArray())
+            record(QString::fromUtf8(QJsonDocument(error.toObject()).toJson(QJsonDocument::Compact)));
+        return;
+    }
     QMap<QString, QTreeWidgetItem *> files;
     for (const auto &v : currentResults) {
         auto hit = v.toObject();
@@ -982,6 +1055,13 @@ void Window::showPreview(const QString &p, int line, int column) {
     QPointer<QWidget> previousFocus = QApplication::focusWidget();
     QString error;
     if (!preview->load(p, error)) {
+        preview->send(SCI_SETREADONLY, 0);
+        preview->sends(SCI_SETTEXT, 0, "");
+        preview->send(SCI_SETREADONLY, 1);
+        tabs->setCurrentIndex(0);
+        selectedPath = p;
+        selectedLine = line;
+        previewLabel->setText(QDir(root).relativeFilePath(p) + QStringLiteral(" · ") + error);
         state->setText(error);
         return;
     }
@@ -997,6 +1077,7 @@ void Window::showPreview(const QString &p, int line, int column) {
     const auto relative = QDir(root).relativeFilePath(p);
     for (const auto &v : currentResults) {
         auto hit = v.toObject();
+        if (hit.value(QStringLiteral("kind")).toString() == QStringLiteral("file")) continue;
         if (hit.value(QStringLiteral("path")).toString() != relative)
             continue;
         auto start =

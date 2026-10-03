@@ -34,7 +34,7 @@ bool Window::closeProject() {
     preview->send(SCI_SETREADONLY,0); preview->sends(SCI_SETTEXT,0,""); preview->send(SCI_SETREADONLY,1);
     projectLabel->clear(); previewLabel->clear(); resultLabel->clear();
     state->setText(ui(QStringLiteral("Scegli una directory radice per iniziare")));
-    setWindowTitle(QStringLiteral("Source Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
+    setWindowTitle(QStringLiteral("Code Navigator %1").arg(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
     QSettings().remove(QStringLiteral("session/lastProject"));
     return true;
 }

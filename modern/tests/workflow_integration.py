@@ -10,6 +10,60 @@ BASE = Path(__file__).resolve().parents[1]
 ENGINE = BASE / 'core/target/release/sn-index.exe'
 PARSERS = BASE.parent / 'outputs/libexec/snavigator'
 
+class FileSearchTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='code-nav-files-')
+        self.root = Path(self.temp.name) / 'Sorgenti à 日本'
+        for directory in ('src/nested', 'build', '.git', '.sn-index'):
+            (self.root / directory).mkdir(parents=True, exist_ok=True)
+        for name in ('src/nested/Widget.CPP', 'another.cpp', 'build/generated.cpp',
+                     '.git/hidden.cpp', '.sn-index/internal.cpp', 'Makefile'):
+            (self.root / name).write_text('// sample', encoding='utf-8')
+        (self.root / 'binary.bin').write_bytes(b'\0\xff')
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def call(self, *args, ok=True):
+        result = subprocess.run([str(ENGINE), 'find-files', '--root', str(self.root),
+                                 *map(str, args)], capture_output=True, timeout=20)
+        if ok:
+            self.assertEqual(result.returncode, 0, result.stderr.decode(errors='replace'))
+            return json.loads(result.stdout)
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_names_wildcards_regex_case_and_relative_paths(self):
+        result = self.call('--pattern', '*.cpp')
+        self.assertEqual({r['path'] for r in result['results']},
+                         {'src/nested/Widget.CPP', 'another.cpp', 'build/generated.cpp'})
+        self.assertFalse(result['truncated'])
+        result = self.call('--pattern', '*.cpp', '--case-sensitive')
+        self.assertEqual(len(result['results']), 2)
+        result = self.call('--pattern', 'src\\*Widget.*')
+        self.assertEqual([r['path'] for r in result['results']], ['src/nested/Widget.CPP'])
+        result = self.call('--pattern', r'^(Widget|another)\.', '--mode', 'regex')
+        self.assertEqual(len(result['results']), 2)
+        result = self.call('--pattern', 'widget', '--mode', 'literal', '--path', 'src/*')
+        self.assertEqual(len(result['results']), 1)
+
+    def test_live_files_and_persistent_exclusions_without_an_index(self):
+        result = self.call()
+        self.assertIn('binary.bin', {r['path'] for r in result['results']})
+        self.assertFalse(any('.git/' in r['path'] or '.sn-index/' in r['path'] for r in result['results']))
+        result = self.call('--exclude-extension', 'cpp', '--exclude-extension', '@makefile')
+        self.assertEqual([r['path'] for r in result['results']], ['binary.bin'])
+        (self.root / 'new.abc').write_text('unindexed', encoding='utf-8')
+        self.assertEqual(len(self.call('--pattern', '*.abc')['results']), 1)
+        (self.root / 'new.abc').unlink()
+        self.assertEqual(self.call('--pattern', '*.abc')['results'], [])
+        self.assertFalse((self.root / 'index.sqlite').exists())
+
+    def test_limits_and_invalid_expressions(self):
+        result = self.call('--pattern', '*.cpp', '--limit', 1)
+        self.assertTrue(result['truncated'])
+        self.assertEqual(len(result['results']), 1)
+        self.call('--pattern', '[invalid', '--mode', 'regex', ok=False)
+
 class WorkflowTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='navigator-flow-')

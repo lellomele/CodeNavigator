@@ -24,7 +24,9 @@ class ProjectFileFilter : public QSortFilterProxyModel {
             return true;
         const auto source = files->index(row, 0, parent);
         const auto info = files->fileInfo(source);
-        return info.isDir() || !excluded.contains(info.suffix().toLower());
+        const auto extension = info.suffix().isEmpty() ? QStringLiteral("@") + info.fileName().toLower()
+                                                       : info.suffix().toLower();
+        return info.isDir() || !excluded.contains(extension);
     }
 
   private:

@@ -1,4 +1,5 @@
 mod discovery;
+mod file_search;
 mod index;
 mod parser;
 mod replace;
@@ -22,7 +23,7 @@ use std::{
 #[derive(Parser)]
 #[command(
     version,
-    about = "Source Navigator: indice locale e ricerca dei simboli"
+    about = "Code Navigator: indice locale, ricerca dei file e dei simboli"
 )]
 struct Args {
     #[command(subcommand)]
@@ -120,6 +121,24 @@ enum Command {
         #[arg(long, default_value_t = 500)]
         limit: usize,
     },
+    FindFiles {
+        #[arg(long)]
+        root: PathBuf,
+        #[arg(long, default_value = "*")]
+        pattern: String,
+        #[arg(long, default_value = "glob")]
+        mode: String,
+        #[arg(long, default_value = "")]
+        path: String,
+        #[arg(long)]
+        case_sensitive: bool,
+        #[arg(long = "exclude-extension")]
+        excluded_extensions: Vec<String>,
+        #[arg(long, default_value_t = 5000)]
+        limit: usize,
+        #[arg(long, default_value_t = 5000)]
+        timeout_ms: u64,
+    },
     Files {
         #[arg(long)]
         db: PathBuf,
@@ -167,6 +186,30 @@ fn run() -> Result<()> {
             &path,
         )?),
         Command::Discover { root } => telemetry::emit(&discovery::scan(&root)?),
+        Command::FindFiles {
+            root,
+            pattern,
+            mode,
+            path,
+            case_sensitive,
+            excluded_extensions,
+            limit,
+            timeout_ms,
+        } => {
+            telemetry::emit(&file_search::find(
+                file_search::Options {
+                    root: &root,
+                    pattern: &pattern,
+                    mode: &mode,
+                    path: &path,
+                    case_sensitive,
+                    excluded_extensions: &excluded_extensions,
+                    limit: limit.clamp(1, 10000),
+                    timeout_ms: timeout_ms.clamp(100, 30000),
+                },
+                &canceled,
+            )?);
+        }
         Command::ReplacePlan { request } => telemetry::emit(&replace::plan(&request)?),
         Command::ReplaceApply { journal } => telemetry::emit(&replace::execute(&journal, false)?),
         Command::ReplaceUndo { journal } => telemetry::emit(&replace::execute(&journal, true)?),

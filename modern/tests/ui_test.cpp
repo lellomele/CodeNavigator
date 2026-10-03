@@ -59,6 +59,7 @@ class UiTest : public QObject {
             QCOMPARE(w.menuBar()->actions().first()->text(),fileNames[i]);
             QVERIFY(!w.findChild<QPushButton *>(QStringLiteral("expandEditor"))->icon().isNull());
             QVERIFY(w.windowTitle().contains(QString::fromLatin1(SOURCE_NAVIGATOR_VERSION)));
+            QVERIFY(w.windowTitle().startsWith(QStringLiteral("Code Navigator")));
             auto toggle=w.findChild<QToolButton *>(QStringLiteral("replaceToggle"));
             auto area=w.findChild<QWidget *>(QStringLiteral("replaceArea"));
             QVERIFY(toggle && area && !area->isVisible());
@@ -252,6 +253,76 @@ class UiTest : public QObject {
         QVERIFY(restored);
         QVERIFY(QSettings().value(QStringLiteral("files/excludedExtensions")).toStringList().isEmpty());
         QTRY_VERIFY(proxy->mapFromSource(model->index(rustFile)).isValid());
+    }
+    void fileNameSearchPreviewAndMultipleEditors() {
+        QTemporaryDir workspace;
+        QVERIFY(workspace.isValid());
+        qputenv("SN_DATA_DIR", workspace.filePath(QStringLiteral("profile")).toUtf8());
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+                           workspace.filePath(QStringLiteral("settings")));
+        QSettings().remove(QStringLiteral("files/excludedExtensions"));
+        const auto root = workspace.filePath(QStringLiteral("Progetto à 日本"));
+        QDir().mkpath(root + QStringLiteral("/src/core"));
+        QDir().mkpath(root + QStringLiteral("/tests"));
+        QDir().mkpath(root + QStringLiteral("/build"));
+        for (const auto &name : {QStringLiteral("src/core/sample.cpp"), QStringLiteral("tests/test_file.cpp"),
+                                 QStringLiteral("build/generated.cpp"), QStringLiteral("unknown.abc")}) {
+            QFile file(root + QLatin1Char('/') + name);
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            file.write("// sample preview\nint value = 3;\n");
+        }
+        QFile binary(root + QStringLiteral("/binary.cpp"));
+        QVERIFY(binary.open(QIODevice::WriteOnly));binary.write(QByteArray("a\0b", 3));binary.close();
+        Window window;
+        window.show();
+        bool discoveryDismissed = false;
+        QTimer watcher;watcher.setInterval(20);
+        connect(&watcher, &QTimer::timeout, &window, [&] {
+            auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+            if (dialog && dialog->windowTitle() == QStringLiteral("File da includere")) {
+                watcher.stop();discoveryDismissed = true;dialog->reject();
+            }
+        });
+        watcher.start();window.openProject(root);
+        QTRY_VERIFY_WITH_TIMEOUT(discoveryDismissed, 10000);
+        auto scope = window.findChild<QComboBox *>(QStringLiteral("searchScope"));
+        auto mode = window.findChild<QComboBox *>(QStringLiteral("searchMode"));
+        auto pattern = window.findChild<QLineEdit *>(QStringLiteral("searchPattern"));
+        auto path = window.findChild<QLineEdit *>(QStringLiteral("pathFilter"));
+        auto results = window.findChild<QTreeWidget *>(QStringLiteral("searchResults"));
+        auto tabs = window.findChild<QTabWidget *>(QStringLiteral("editorTabs"));
+        auto preview = window.findChild<Editor *>(QStringLiteral("previewEditor"));
+        scope->setCurrentIndex(2);
+        QCOMPARE(mode->currentData().toString(), QStringLiteral("glob"));
+        QVERIFY(!window.findChild<QToolButton *>(QStringLiteral("replaceToggle"))->isVisible());
+        QVERIFY(!window.findChild<QCheckBox *>(QStringLiteral("wholeWords"))->isEnabled());
+        pattern->setText(QStringLiteral("*.cpp"));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 4, 10000);
+        for (int i = 0; i < results->topLevelItemCount(); ++i) QCOMPARE(results->topLevelItem(i)->childCount(), 0);
+        path->setText(QStringLiteral("src/*"));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 1, 10000);
+        results->setCurrentItem(results->topLevelItem(0));
+        QCOMPARE(preview->path(), QFileInfo(root + QStringLiteral("/src/core/sample.cpp")).canonicalFilePath());
+        QVERIFY(preview->bytes().contains("sample preview"));
+        window.findChild<QPushButton *>(QStringLiteral("openMatchedFiles"))->click();
+        QCOMPARE(tabs->count(), 2);
+        QVERIFY(!qobject_cast<Editor *>(tabs->currentWidget())->send(SCI_GETREADONLY));
+        path->clear();mode->setCurrentIndex(2);
+        pattern->setText(QStringLiteral("^(sample|test).*\\.cpp$"));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 2, 10000);
+        for (int i = 0; i < results->topLevelItemCount(); ++i) results->topLevelItem(i)->setCheckState(0, Qt::Checked);
+        auto captures = qEnvironmentVariable("SN_SCREENSHOT_DIR");
+        if (!captures.isEmpty()) { QDir().mkpath(captures);window.grab().save(captures + QStringLiteral("/file-name-search.png")); }
+        window.findChild<QPushButton *>(QStringLiteral("openMatchedFiles"))->click();
+        QCOMPARE(tabs->count(), 3);
+        pattern->setText(QStringLiteral("binary\\.cpp"));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 1, 10000);
+        results->setCurrentItem(results->topLevelItem(0));
+        QVERIFY(preview->bytes().isEmpty());
+        scope->setCurrentIndex(0);
+        QVERIFY(window.findChild<QToolButton *>(QStringLiteral("replaceToggle"))->isVisible());
+        QVERIFY(window.findChild<QCheckBox *>(QStringLiteral("wholeWords"))->isEnabled());
+        QCOMPARE(mode->currentData().toString(), QStringLiteral("literal"));
     }
     void projectSearchPreviewReplaceAndExternalEditor() {
         QTemporaryDir d;

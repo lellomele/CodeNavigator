@@ -1,12 +1,13 @@
-# Source Navigator
+# Code Navigator
 
-<img src="modern/assets/source-navigator.png" width="72" alt="Icona Source Navigator">
+<img src="modern/assets/source-navigator.png" width="72" alt="Icona Code Navigator">
 
 Applicazione desktop per esplorare, cercare e modificare i sorgenti di un progetto a partire da una cartella radice. Interfaccia Qt 6, motore Rust/SQLite ed editor Scintilla/Lexilla. Italiano predefinito, inglese, francese e tedesco.
 
 ## Funzioni
 
 - Indicizzazione incrementale con selezione delle estensioni e parser inclusi.
+- Ricerca dei nomi dei file in tutto l’albero del progetto, con wildcard, regex, anteprima e apertura nell’editor.
 - Ricerca testuale e nei simboli: testo, wildcard, regex, parole intere, maiuscole/minuscole e filtro percorso.
 - Anteprima rapida, sostituzione nei file selezionati, copie di recupero e controllo delle modifiche esterne.
 - Editor con sintassi colorata, recupero delle bozze ed editor esterno configurabile.
@@ -33,7 +34,7 @@ Specificare in `QtPrefix` la radice dell’SDK Qt effettivamente installato. Rus
 ## Uso
 
 1. **File → Apri progetto**: scegliere la cartella radice e le estensioni da includere. **Tipi di file** riapre l’ultima analisi; un clic sulle intestazioni ordina le colonne. Spuntare **Escludi sempre** per nascondere un’estensione da tutti i progetti; **Preferenze → Estensioni escluse** permette di ripristinarla. **Rianalizza cartelle** aggiorna l’elenco. **F5** aggiorna l’indice.
-2. Cercare nel pannello centrale. Un clic mostra l’anteprima; un doppio clic apre il file nell’editor. Le opzioni di sostituzione si aprono con **Mostra opzioni di sostituzione**. Selezionare con le checkbox i file da sostituire e verificare **Anteprima sostituzione** prima di applicare.
+2. Nel pannello centrale scegliere **Contenuto dei file**, **Simboli** oppure **Nomi dei file**. Per i nomi usare, per esempio, `*.cpp`, `test?.rs` o `src/*test*.cpp`; la ricerca funziona anche senza indice. Spuntare i risultati e premere **Apri file selezionati** per aprirli nell’editor (fino a 32 per apertura). Un clic mostra l’anteprima; un doppio clic apre il file nell’editor. Le opzioni di sostituzione si aprono con **Mostra opzioni di sostituzione**. Selezionare con le checkbox i file da sostituire e verificare **Anteprima sostituzione** prima di applicare.
 3. **Strumenti → Ripristina sostituzione** recupera gli originali. Salvare o chiudere le schede modificate prima di sostituire o ripristinare.
 4. **Strumenti → Riferimenti incrociati** (`Ctrl+Shift+R`) cerca le relazioni del simbolo. Il filtro parte dalla cartella selezionata nel progetto. Il clic destro su una parola nell’editor offre la stessa ricerca.
 5. **File → Stampa corrispondenze** (`Ctrl+P`) stampa i file spuntati, oppure tutti quelli nei risultati se nessuno è spuntato. **Stampante…** apre la scelta stampante di Windows; **Salva PDF…** funziona anche senza stampanti installate. La stampa usa il contenuto salvato su disco.
@@ -43,6 +44,7 @@ Le wildcard testuali accettano `*` e `?`. Le regex supportano gruppi e alternati
 
 ## Limiti operativi
 
+- La ricerca dei nomi attraversa anche le cartelle generate (`build`, `dist`, ecc.), salta i metadati `.git`, `.svn`, `.sn-index` e non segue collegamenti simbolici. Rispetta le estensioni escluse. Mostra fino a 5.000 file e segnala risultati parziali dopo il limite di tempo; i file binari possono comparire nell’elenco, mentre l’editor accetta solo testo.
 - File testuali fino a 32 MiB: UTF-8, UTF-16 con BOM e Windows-1252. La ricerca mostra al massimo 5.000 corrispondenze e segnala risultati parziali; l’anteprima e la stampa riportano fino a 200 righe per file, con estratti di 500 caratteri.
 - I riferimenti incrociati sono sintattici: non risolvono semanticamente omonimi, overload, macro, chiamate dinamiche o dipendenze di sistema. Le regole coprono C/C++, Java, C#, JavaScript/TypeScript, Python, Rust e PHP, con limiti sulle sintassi avanzate. I parser storici forniscono ulteriori dichiarazioni. Aggiornare l’indice dopo modifiche esterne.
 - Le sostituzioni su più file non costituiscono una singola transazione: il registro e le copie originali permettono il recupero di operazioni interrotte. I file modificati esternamente sono protetti dal ripristino automatico.
