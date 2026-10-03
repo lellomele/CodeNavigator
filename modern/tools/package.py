@@ -16,7 +16,7 @@ prefix = Path(args.qt_prefix)
 dest = args.output_dir.resolve()
 dest.mkdir(parents=True, exist_ok=True)
 shutil.copytree(base / "assets", dest / "assets", dirs_exist_ok=True)
-for source in [base / "build/source-navigator.exe", base / "core/target/release/sn-index.exe"]:
+for source in [base / "build/CodeNavigator.exe", base / "core/target/release/sn-index.exe"]:
     shutil.copy2(source, dest / source.name)
 compiler = Path("C:/msys64/mingw64")
 for name in ["Qt6Core.dll", "Qt6Gui.dll", "Qt6Widgets.dll", "Qt6Core5Compat.dll", "Qt6PrintSupport.dll"]:
@@ -42,20 +42,15 @@ while queue:
         if source and not target.exists():
             shutil.copy2(source, target)
             queue.append(target)
-shutil.copytree(base.parent / "outputs", dest / "legacy", dirs_exist_ok=True)
+shutil.copytree(base / "third_party/parsers", dest / "parsers", dirs_exist_ok=True)
 shutil.copytree(base / "demo", dest / "demo", dirs_exist_ok=True, ignore=shutil.ignore_patterns(".sn-index"))
-demo_cache = dest / "demo/.sn-index"
-if demo_cache.exists():
-    resolved_cache = demo_cache.resolve()
-    if not resolved_cache.is_relative_to(dest.resolve()) or demo_cache.is_symlink():
-        raise RuntimeError("Demo cache outside the distribution directory")
-    shutil.rmtree(resolved_cache)
 shutil.copytree(base / "themes", dest / "themes", dirs_exist_ok=True)
 licenses = dest / "licenses"
 licenses.mkdir(exist_ok=True)
 for component in ["scintilla", "lexilla"]:
     shutil.copy2(base / "third_party" / component / "License.txt", licenses / f"{component}.txt")
-shutil.copy2(base.parent / "COPYING", licenses / "Source-Navigator-4.5.txt")
+shutil.copy2(base / "third_party/parsers/COPYING", licenses / "parsers-GPL.txt")
+shutil.copy2(base / "third_party/parsers/TCL-LICENSE.txt", licenses / "parsers-Tcl.txt")
 for name in ["LICENSE", "THIRD_PARTY.md", "README.md"]:
     shutil.copy2(base / name, dest / name)
 qt_licenses = prefix / "share/licenses/qt6-base"

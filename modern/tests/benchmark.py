@@ -12,7 +12,7 @@ with tempfile.TemporaryDirectory(prefix='navigator-benchmark-') as folder:
     for n in range(1000):
         text=f'pub fn item_{n:04}() -> usize {{\n    {n}\n}}\n'+('// A representative source comment with UTF-8: caffè.\n'*100)
         (root/f'module_{n:04}.rs').write_text(text,encoding='utf-8')
-    args=['index','--root',str(root),'--db',str(db),'--parsers',str(base.parent/'outputs/libexec/snavigator')]
+    args=['index','--root',str(root),'--db',str(db),'--parsers',str(base/'third_party/parsers')]
     def measure(command):
         started=time.perf_counter();p=subprocess.run([str(engine),*command],capture_output=True,check=True)
         return dict(wall_ms=round((time.perf_counter()-started)*1000,1),result=json.loads(p.stdout.splitlines()[-1]))

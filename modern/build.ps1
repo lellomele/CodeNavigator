@@ -18,10 +18,10 @@ Copy-Item -LiteralPath "$ModernRoot/core/target/release/sn-index.exe" -Destinati
 ctest --test-dir "$ModernRoot/build" --output-on-failure
 if ($LASTEXITCODE) { Get-Content "$ModernRoot/build/qt-results.txt"; throw 'Test GUI falliti' }
 foreach ($suite in @('core_integration.py','workflow_integration.py')) {
-    python "$ModernRoot/tests/$suite"
+    python -X utf8 "$ModernRoot/tests/$suite"
     if ($LASTEXITCODE) { throw "Test di integrazione falliti: $suite" }
 }
 if ($Package) {
-    python "$ModernRoot/tools/package.py" --qt-prefix $QtPrefix
+    python -X utf8 "$ModernRoot/tools/package.py" --qt-prefix $QtPrefix
     if ($LASTEXITCODE) { throw 'Creazione pacchetto fallita' }
 }

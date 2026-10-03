@@ -8,7 +8,7 @@ import unittest
 
 BASE = Path(__file__).resolve().parents[1]
 ENGINE = BASE / 'core/target/release/sn-index.exe'
-PARSERS = BASE.parent / 'outputs/libexec/snavigator'
+PARSERS = BASE / 'third_party/parsers'
 
 class FileSearchTests(unittest.TestCase):
     def setUp(self):

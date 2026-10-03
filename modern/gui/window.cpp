@@ -49,10 +49,10 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
         QDesktopServices::openUrl(QUrl(QStringLiteral("https://infotechlab.altervista.org/")));
     });
     engine = QCoreApplication::applicationDirPath() + QStringLiteral("/sn-index.exe");
-    parsers = QCoreApplication::applicationDirPath() + QStringLiteral("/legacy/libexec/snavigator");
+    parsers = QCoreApplication::applicationDirPath() + QStringLiteral("/parsers");
     if (!QFileInfo::exists(parsers))
         parsers = QDir(QCoreApplication::applicationDirPath())
-                      .absoluteFilePath(QStringLiteral("../../outputs/libexec/snavigator"));
+                      .absoluteFilePath(QStringLiteral("../third_party/parsers"));
     auto central = new QWidget;
     auto main = new QVBoxLayout(central);
     main->setContentsMargins(16, 12, 16, 8);

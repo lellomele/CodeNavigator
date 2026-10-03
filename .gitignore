@@ -11,3 +11,10 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# Local reference checkout: excluded from the Code Navigator project.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/modern/

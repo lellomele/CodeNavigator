@@ -18,7 +18,7 @@ env.pop('QT_PLUGIN_PATH',None)
 env['QT_QPA_PLATFORM']='offscreen'
 env['QT_QPA_FONTDIR']='C:/Windows/Fonts'
 env['SN_DATA_DIR']=str(output/'profile')
-exe=distribution/'source-navigator.exe'
+exe=distribution/'CodeNavigator.exe'
 p=subprocess.run([str(exe),'--theme','3','--file',str(distribution/'demo/catalog.cpp'),'--capture',str(output/'startup.png')],env=env,timeout=25,capture_output=True)
 assert p.returncode==0,(p.returncode,p.stderr)
 assert (output/'startup.png').stat().st_size>10000

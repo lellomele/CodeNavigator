@@ -1,0 +1,7 @@
+{
+  "component": "Language parsers",
+  "source_url": "https://github.com/lellomele/CodeNavigator/releases/download/v0.5.1/ParserSources-4.5.tar.gz",
+  "sha256": "ff9d6daffd1aece48079bd9c9636db444c918c9f3d11592988f1a4d1c85f0d58",
+  "license": "GPL-2.0-or-later",
+  "runtime": "Tcl 8.3"
+}
