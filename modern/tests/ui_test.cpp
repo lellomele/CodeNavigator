@@ -308,6 +308,20 @@ class UiTest : public QObject {
         pattern->setText(QStringLiteral("*.cpp"));
         QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 4, 10000);
         for (int i = 0; i < results->topLevelItemCount(); ++i) QCOMPARE(results->topLevelItem(i)->childCount(), 0);
+        auto tree = window.findChild<QTreeView *>(QStringLiteral("projectTree"));
+        QVERIFY(tree);
+        auto proxy = qobject_cast<QSortFilterProxyModel *>(tree->model());
+        auto fileModel = qobject_cast<QFileSystemModel *>(proxy->sourceModel());
+        QTRY_VERIFY(proxy->mapFromSource(fileModel->index(root + QStringLiteral("/src"))).isValid());
+        tree->setCurrentIndex(proxy->mapFromSource(fileModel->index(root + QStringLiteral("/src"))));
+        path->setText(QStringLiteral("*"));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 1, 10000);
+        QCOMPARE(results->topLevelItem(0)->text(0), QStringLiteral("src/core/sample.cpp"));
+        tree->setCurrentIndex(proxy->mapFromSource(fileModel->index(root + QStringLiteral("/tests"))));
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 1, 10000);
+        QTRY_COMPARE(results->topLevelItem(0)->text(0), QStringLiteral("tests/test_file.cpp"));
+        window.findChild<QPushButton *>(QStringLiteral("resetSearchDirectory"))->click();
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 4, 10000);
         path->setText(QStringLiteral("src/*"));
         QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 1, 10000);
         results->setCurrentItem(results->topLevelItem(0));
@@ -361,6 +375,8 @@ class UiTest : public QObject {
         QVERIFY(fb.open(QIODevice::WriteOnly));
         fb.write("export const alpha = 1;\n");
         fb.close();
+        QFile probe(root + QStringLiteral("/probe.c"));
+        QVERIFY(probe.open(QIODevice::WriteOnly));probe.write("int ProbeName(void) { return 0; }\n");probe.close();
         Window w;
         w.show();
         bool discoveryShown = false, reviewShown = false;
@@ -411,12 +427,28 @@ class UiTest : public QObject {
         auto model=qobject_cast<QFileSystemModel *>(proxy->sourceModel());
         const auto folder=root+QStringLiteral("/nested folder");QDir().mkpath(folder);
         QTRY_VERIFY(proxy->mapFromSource(model->index(folder)).isValid());
+        auto searchScope = w.findChild<QComboBox *>(QStringLiteral("searchScope"));
+        search->setText(QStringLiteral("ProbeName"));
+        searchScope->setCurrentIndex(1);
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 1, 10000);
         projectTree->setCurrentIndex(proxy->mapFromSource(model->index(folder)));
+        QTRY_VERIFY(w.findChild<QLabel *>(QStringLiteral("searchDirectoryLabel"))->text().contains(QStringLiteral("nested folder")));
+        QTest::qWait(400);
+        QTRY_COMPARE(results->topLevelItemCount(), 0);
+        searchScope->setCurrentIndex(0);
+        search->setText(QStringLiteral("alpha"));
+        QTest::qWait(400);
+        QTRY_COMPARE(results->topLevelItemCount(), 0);
         bool filterChecked=false;
         QTimer::singleShot(0,&w,[&]{
             auto dialog=qobject_cast<QDialog *>(QApplication::activeModalWidget());QVERIFY(dialog);
             QTimer::singleShot(5000,dialog,&QDialog::reject);
             QCOMPARE(dialog->findChild<QLineEdit *>(QStringLiteral("xrefPathFilter"))->text(),QStringLiteral("nested folder/*"));
+            dialog->findChild<QLineEdit *>(QStringLiteral("xrefPathFilter"))->setText(QStringLiteral("*"));
+            dialog->findChild<QLineEdit *>(QStringLiteral("xrefSubject"))->setText(QStringLiteral("alpha"));
+            dialog->findChild<QPushButton *>(QStringLiteral("xrefSearch"))->click();
+            QTRY_COMPARE_WITH_TIMEOUT(dialog->findChild<QLabel *>(QStringLiteral("xrefStatus"))->text(), QStringLiteral("0 riferimenti"), 4000);
+            QCOMPARE(dialog->findChild<QTreeWidget *>(QStringLiteral("xrefResults"))->topLevelItemCount(), 0);
             filterChecked=true;dialog->reject();
         });
         w.findChild<QAction *>(QStringLiteral("crossReferences"))->trigger();QVERIFY(filterChecked);
@@ -440,6 +472,7 @@ class UiTest : public QObject {
         });
         w.findChild<QAction *>(QStringLiteral("crossReferences"))->trigger();
         QVERIFY(xrefsShown);
+        QTRY_COMPARE_WITH_TIMEOUT(results->topLevelItemCount(), 2, 10000);
         bool printShown=false;
         QTimer printWatcher;printWatcher.setInterval(20);
         connect(&printWatcher,&QTimer::timeout,&w,[&]{
@@ -485,7 +518,7 @@ class UiTest : public QObject {
             w.setTheme(0);
             QTest::qWait(200);
             QVERIFY(w.grab().save(imageDir + QStringLiteral("/giorno.png")));
-            for (int theme = 0; theme < 4; ++theme) {
+            for (int theme = 0; theme < Theme::presets().size(); ++theme) {
                 w.setTheme(theme);
                 auto combo = w.findChild<QComboBox *>(QStringLiteral("themes"));
                 combo->showPopup();
@@ -493,6 +526,7 @@ class UiTest : public QObject {
                 QTest::qWait(80);
                 QVERIFY(combo->view()->window()->grab().save(imageDir + QStringLiteral("/popup-%1.png").arg(theme)));
                 combo->hidePopup();
+                if (theme >= 4) QVERIFY(w.grab().save(imageDir + QStringLiteral("/soft-day-%1.png").arg(theme)));
             }
             w.setTheme(3);
         }

@@ -18,6 +18,8 @@ class Window : public QMainWindow {
 
   private:
     Theme theme = Theme::presets()[3];
+    QString searchDirectory;
+    QLabel *searchDirectoryLabel;
     QString root, db, parsers, engine, cancelFile, selectedPath;
     QStringList extensions;
     int selectedLine = 1;
@@ -54,6 +56,8 @@ class Window : public QMainWindow {
     void setupFileMenu();
     void showCrossReferences(const QString &subject = {});
     QString selectedProjectPathFilter() const;
+    QString selectedProjectRelativeDirectory() const;
+    void setSearchDirectory(const QString &);
     bool closeProject();
     void saveAs();
     void recoverReplacement();

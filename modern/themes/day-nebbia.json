@@ -1,0 +1,12 @@
+{
+  "name": "Giorno nebbia",
+  "background": "#d2d9e1",
+  "foreground": "#24303d",
+  "panel": "#bcc9d6",
+  "muted": "#465465",
+  "accent": "#255b85",
+  "keyword": "#59467c",
+  "string": "#305c45",
+  "comment": "#465465",
+  "number": "#743d2a"
+}

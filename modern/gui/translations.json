@@ -1183,5 +1183,30 @@
     "en": "Unable to open the selected folder.",
     "fr": "Impossible d’ouvrir le dossier sélectionné.",
     "de": "Der ausgewählte Ordner kann nicht geöffnet werden."
+  },
+  "Intero progetto": {
+    "en": "Entire project",
+    "fr": "Projet entier",
+    "de": "Gesamtes Projekt"
+  },
+  "Cartella: %1": {
+    "en": "Folder: %1",
+    "fr": "Dossier : %1",
+    "de": "Ordner: %1"
+  },
+  "Giorno lino": {
+    "en": "Linen day",
+    "fr": "Jour lin",
+    "de": "Leinen hell"
+  },
+  "Giorno salvia": {
+    "en": "Sage day",
+    "fr": "Jour sauge",
+    "de": "Salbei hell"
+  },
+  "Giorno nebbia": {
+    "en": "Mist day",
+    "fr": "Jour brume",
+    "de": "Nebel hell"
   }
 }

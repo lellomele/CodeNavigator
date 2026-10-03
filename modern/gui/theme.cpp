@@ -18,7 +18,10 @@ QVector<Theme> Theme::presets() {
              QColor("#A5D6A7"), QColor("#A8B3BF"), QColor("#FFA657")},
             {QStringLiteral("Notte blu"), QColor("#0B1220"), QColor("#E2E8F0"), QColor("#182236"),
              QColor("#A6B6CD"), QColor("#67E8F9"), QColor("#C4B5FD"), QColor("#86EFAC"),
-             QColor("#A6B6CD"), QColor("#FCD34D")}};
+             QColor("#A6B6CD"), QColor("#FCD34D")},
+            {QStringLiteral("Giorno lino"), QColor("#ddd6c6"), QColor("#302d27"), QColor("#d0c7b7"), QColor("#575047"), QColor("#265774"), QColor("#663b77"), QColor("#36562e"), QColor("#575047"), QColor("#743b21")},
+{QStringLiteral("Giorno salvia"), QColor("#d3ddd2"), QColor("#26322c"), QColor("#c1cec3"), QColor("#46564b"), QColor("#25565d"), QColor("#55406f"), QColor("#305533"), QColor("#46564b"), QColor("#703c28")},
+{QStringLiteral("Giorno nebbia"), QColor("#d2d9e1"), QColor("#24303d"), QColor("#bcc9d6"), QColor("#465465"), QColor("#255b85"), QColor("#59467c"), QColor("#305c45"), QColor("#465465"), QColor("#743d2a")}};
 }
 static double luminance(const QColor &c) {
     auto channel = [](double x) {

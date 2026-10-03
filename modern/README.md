@@ -13,7 +13,7 @@ Applicazione desktop per esplorare, cercare e modificare i sorgenti di un proget
 - Editor con sintassi colorata, recupero delle bozze ed editor esterno configurabile.
 - Riferimenti incrociati sintattici: chiamate, dichiarazioni, letture, scritture, ereditarietà e dipendenze.
 - Stampa delle corrispondenze tramite stampanti Windows ed esportazione PDF diretta.
-- Quattro temi personalizzabili giorno/notte, controllo dei contrasti e pannelli ridimensionabili.
+- Sette temi personalizzabili giorno/notte, controllo dei contrasti e pannelli ridimensionabili.
 
 ## Installazione e requisiti
 
@@ -36,9 +36,13 @@ Specificare in `QtPrefix` la radice dell’SDK Qt effettivamente installato. Rus
 1. **File → Apri progetto**: scegliere la cartella radice e le estensioni da includere. **Tipi di file** riapre l’ultima analisi; un clic sulle intestazioni ordina le colonne. Spuntare **Escludi sempre** per nascondere un’estensione da tutti i progetti; **Preferenze → Estensioni escluse** permette di ripristinarla. **Rianalizza cartelle** aggiorna l’elenco. **F5** aggiorna l’indice.
 2. Nel pannello centrale scegliere **Contenuto dei file**, **Simboli** oppure **Nomi dei file**. Per i nomi usare, per esempio, `*.cpp`, `test?.rs` o `src/*test*.cpp`; la ricerca funziona anche senza indice. Spuntare i risultati e premere **Apri file selezionati** per aprirli nell’editor (fino a 32 per apertura). **Apri cartella** apre la cartella del risultato selezionato nel gestore file. Un clic mostra l’anteprima; un doppio clic apre il file nell’editor. Le opzioni di sostituzione si aprono con **Mostra opzioni di sostituzione**. Selezionare con le checkbox i file da sostituire e verificare **Anteprima sostituzione** prima di applicare.
 3. **Strumenti → Ripristina sostituzione** recupera gli originali. Salvare o chiudere le schede modificate prima di sostituire o ripristinare.
-4. **Strumenti → Riferimenti incrociati** (`Ctrl+Shift+R`) cerca le relazioni del simbolo. Il filtro parte dalla cartella selezionata nel progetto. Il clic destro su una parola nell’editor offre la stessa ricerca.
+4. **Strumenti → Riferimenti incrociati** (`Ctrl+Shift+R`) cerca le relazioni del simbolo. La ricerca resta limitata alla cartella selezionata nel progetto. Il clic destro su una parola nell’editor offre la stessa ricerca.
 5. **File → Stampa corrispondenze** (`Ctrl+P`) stampa i file spuntati, oppure tutti quelli nei risultati se nessuno è spuntato. **Stampante…** apre la scelta stampante di Windows; **Salva PDF…** funziona anche senza stampanti installate. La stampa usa il contenuto salvato su disco.
 6. In **Preferenze** si configurano lingua, colori, editor esterno e riapertura dell’ultimo progetto. Il cambio lingua si applica al riavvio. Le icone in alto a destra nascondono o espandono i pannelli; **Visualizza** li riapre.
+
+Selezionare una cartella nel pannello Progetto limita le ricerche di contenuti, simboli, nomi dei file e riferimenti incrociati alla cartella e alle sue sottocartelle. Il filtro percorso restringe ulteriormente la selezione. **Intero progetto** ripristina la ricerca dalla radice. Selezionando un file nell’albero si usa la cartella che lo contiene.
+
+I temi **Giorno lino**, **Giorno salvia** e **Giorno nebbia** offrono fondi chiari attenuati; le palette restano personalizzabili con verifica del contrasto.
 
 Le wildcard testuali accettano `*` e `?`. Le regex supportano gruppi e alternative, ma non lookaround o backreference nel pattern. Nella sostituzione, `$1` e `${nome}` richiamano i gruppi; `$$` inserisce un dollaro. Il filtro percorso accetta wildcard sui percorsi relativi, usando `/` tra le cartelle.
 

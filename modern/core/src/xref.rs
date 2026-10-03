@@ -424,7 +424,7 @@ pub fn query(
     subject: &str,
     relation: &str,
     direction: &str,
-    path: &str,
+    scope: crate::search::PathScope<'_>,
 ) -> Result<Value> {
     anyhow::ensure!(subject.len() <= 4096, "Subject too long");
     anyhow::ensure!(
@@ -438,14 +438,16 @@ pub fn query(
         matches!(direction, "incoming" | "outgoing"),
         "Invalid direction"
     );
+    let path = scope.pattern;
+    let directory = crate::search::directory_prefix(scope.directory)?;
     let paths = crate::search::matcher(if path.is_empty() { "*" } else { path }, "glob", false)?;
     let column = if direction == "outgoing" {
         "source"
     } else {
         "target"
     };
-    let mut q=c.prepare(&format!("SELECT x.path,x.source,x.target,x.kind,x.line,x.col,f.status FROM xrefs x JOIN files f ON f.path=x.path WHERE (?1='' OR x.{column}=?1 OR (x.kind='depends' AND ?2='outgoing' AND x.path=?1)) AND (?3='all' OR x.kind=?3) ORDER BY x.path,x.line"))?;
-    let mut rows = q.query(params![subject, direction, relation])?;
+    let mut q=c.prepare(&format!("SELECT x.path,x.source,x.target,x.kind,x.line,x.col,f.status FROM xrefs x JOIN files f ON f.path=x.path WHERE (?1='' OR x.{column}=?1 OR (x.kind='depends' AND ?2='outgoing' AND x.path=?1)) AND (?3='all' OR x.kind=?3) AND (?4='' OR substr(x.path,1,length(?4)+1)=?4||'/') ORDER BY x.path,x.line"))?;
+    let mut rows = q.query(params![subject, direction, relation, directory])?;
     let mut results = Vec::new();
     let start = std::time::Instant::now();
     let mut truncated = false;

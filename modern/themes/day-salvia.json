@@ -1,0 +1,12 @@
+{
+  "name": "Giorno salvia",
+  "background": "#d3ddd2",
+  "foreground": "#26322c",
+  "panel": "#c1cec3",
+  "muted": "#46564b",
+  "accent": "#25565d",
+  "keyword": "#55406f",
+  "string": "#305533",
+  "comment": "#46564b",
+  "number": "#703c28"
+}

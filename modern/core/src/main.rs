@@ -82,6 +82,8 @@ enum Command {
         direction: String,
         #[arg(long, default_value = "")]
         path: String,
+        #[arg(long, default_value = "")]
+        within: String,
     },
     Query {
         #[arg(long)]
@@ -92,6 +94,8 @@ enum Command {
         mode: String,
         #[arg(long, default_value = "")]
         path: String,
+        #[arg(long, default_value = "")]
+        within: String,
         #[arg(long, default_value = "")]
         kind: String,
         #[arg(long)]
@@ -114,6 +118,8 @@ enum Command {
         mode: String,
         #[arg(long, default_value = "")]
         path: String,
+        #[arg(long, default_value = "")]
+        within: String,
         #[arg(long)]
         case_sensitive: bool,
         #[arg(long)]
@@ -130,6 +136,8 @@ enum Command {
         mode: String,
         #[arg(long, default_value = "")]
         path: String,
+        #[arg(long, default_value = "")]
+        within: String,
         #[arg(long)]
         case_sensitive: bool,
         #[arg(long = "exclude-extension")]
@@ -178,12 +186,16 @@ fn run() -> Result<()> {
             relation,
             direction,
             path,
+            within,
         } => telemetry::emit(&xref::query(
             &store::read(&db)?,
             &subject,
             &relation,
             &direction,
-            &path,
+            search::PathScope {
+                pattern: &path,
+                directory: &within,
+            },
         )?),
         Command::Discover { root } => telemetry::emit(&discovery::scan(&root)?),
         Command::FindFiles {
@@ -191,6 +203,7 @@ fn run() -> Result<()> {
             pattern,
             mode,
             path,
+            within,
             case_sensitive,
             excluded_extensions,
             limit,
@@ -202,6 +215,7 @@ fn run() -> Result<()> {
                     pattern: &pattern,
                     mode: &mode,
                     path: &path,
+                    within: &within,
                     case_sensitive,
                     excluded_extensions: &excluded_extensions,
                     limit: limit.clamp(1, 10000),
@@ -240,6 +254,7 @@ fn run() -> Result<()> {
             pattern,
             mode,
             path,
+            within,
             kind,
             case_sensitive,
             whole_words,
@@ -250,7 +265,10 @@ fn run() -> Result<()> {
                 &conn,
                 &pattern,
                 &mode,
-                &path,
+                search::PathScope {
+                    pattern: &path,
+                    directory: &within,
+                },
                 &kind,
                 search::MatchOptions {
                     case_sensitive,
@@ -267,6 +285,7 @@ fn run() -> Result<()> {
             pattern,
             mode,
             path,
+            within,
             case_sensitive,
             whole_words,
             limit,
@@ -275,7 +294,10 @@ fn run() -> Result<()> {
                 &store::read(&db)?,
                 &pattern,
                 &mode,
-                &path,
+                search::PathScope {
+                    pattern: &path,
+                    directory: &within,
+                },
                 search::MatchOptions {
                     case_sensitive,
                     whole_words,

@@ -222,7 +222,7 @@ void Window::openExternal() {
                              ui(QStringLiteral("Impossibile avviare l'editor configurato.")));
 }
 void Window::setTheme(int i) {
-    if (i >= 0 && i < 4)
+    if (i >= 0 && i < Theme::presets().size())
         applyTheme(Theme::presets()[i]);
 }
 void Window::applyTheme(const Theme &t) {
@@ -232,7 +232,7 @@ void Window::applyTheme(const Theme &t) {
         qobject_cast<Editor *>(tabs->widget(i))->applyTheme(t);
     QSignalBlocker block(themes);
     int selected = -1;
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < Theme::presets().size(); ++i)
         if (Theme::presets()[i].name == t.name)
             selected = i;
     themes->setCurrentIndex(selected);

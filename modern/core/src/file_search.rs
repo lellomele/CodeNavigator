@@ -14,6 +14,7 @@ pub struct Options<'a> {
     pub pattern: &'a str,
     pub mode: &'a str,
     pub path: &'a str,
+    pub within: &'a str,
     pub case_sensitive: bool,
     pub excluded_extensions: &'a [String],
     pub limit: usize,
@@ -51,6 +52,13 @@ pub fn find(options: Options<'_>, canceled: &AtomicBool) -> Result<Value> {
         root.is_dir(),
         "La radice del progetto deve essere una directory"
     );
+    let directory = crate::search::directory_prefix(options.within)?;
+    let scan_root =
+        fs::canonicalize(root.join(&directory)).context("Cartella di ricerca non accessibile")?;
+    anyhow::ensure!(
+        scan_root.starts_with(&root) && scan_root.is_dir(),
+        "Cartella di ricerca fuori dal progetto"
+    );
     let mut results = Vec::new();
     let mut errors = Vec::new();
     let mut skipped = 0;
@@ -59,7 +67,7 @@ pub fn find(options: Options<'_>, canceled: &AtomicBool) -> Result<Value> {
     let mut timed_out = false;
     let mut was_canceled = false;
     // Generated directories remain searchable; only repository/index metadata are pruned.
-    for entry in WalkDir::new(&root)
+    for entry in WalkDir::new(&scan_root)
         .follow_links(false)
         .sort_by_file_name()
         .into_iter()

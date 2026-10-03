@@ -1,0 +1,12 @@
+{
+  "name": "Giorno lino",
+  "background": "#ddd6c6",
+  "foreground": "#302d27",
+  "panel": "#d0c7b7",
+  "muted": "#575047",
+  "accent": "#265774",
+  "keyword": "#663b77",
+  "string": "#36562e",
+  "comment": "#575047",
+  "number": "#743b21"
+}

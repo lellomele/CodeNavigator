@@ -28,7 +28,7 @@ bool Window::closeProject() {
     while (tabs->count()>1) if (!closeTab(tabs->count()-1)) return false;
     searchTimer.stop();
     if (queryProcess) { queryProcess->disconnect(this); queryProcess->kill(); queryProcess->deleteLater(); queryProcess=nullptr; }
-    root.clear(); db.clear(); extensions.clear(); discoveryCache={}; selectedPath.clear();
+    root.clear(); searchDirectory.clear(); searchDirectoryLabel->setText(ui(QStringLiteral("Intero progetto"))); db.clear(); extensions.clear(); discoveryCache={}; selectedPath.clear();
     results->clear(); currentResults={}; replaceButton->setEnabled(false);
     tree->setRootIndex(projectFileFilter->mapFromSource(fileModel->setRootPath(QString())));
     preview->send(SCI_SETREADONLY,0); preview->sends(SCI_SETTEXT,0,""); preview->send(SCI_SETREADONLY,1);
@@ -49,21 +49,32 @@ void Window::saveAs() {
     if (!editor->saveCopy(path,error)) {QMessageBox::warning(this,ui(QStringLiteral("Salvataggio")),error);return;}
     openFile(path);
 }
+QString Window::selectedProjectRelativeDirectory() const {
+    const auto relative = QDir::fromNativeSeparators(QDir(root).relativeFilePath(searchDirectory));
+    return relative == QStringLiteral(".") ? QString() : relative;
+}
+void Window::setSearchDirectory(const QString &directory) {
+    if (root.isEmpty()) return;
+    const auto canonical = QFileInfo(directory).canonicalFilePath();
+    const auto relative = QDir::fromNativeSeparators(QDir(root).relativeFilePath(canonical));
+    if (canonical.isEmpty() || !QFileInfo(canonical).isDir() || relative == QStringLiteral("..") ||
+        relative.startsWith(QStringLiteral("../")) || QDir::isAbsolutePath(relative)) return;
+    if (searchDirectory == canonical) return;
+    searchDirectory = canonical;
+    searchDirectoryLabel->setText(relative == QStringLiteral(".") ? ui(QStringLiteral("Intero progetto")) : ui(QStringLiteral("Cartella: %1")).arg(relative));
+    searchDirectoryLabel->setToolTip(canonical);
+    scheduleSearch();
+}
 QString Window::selectedProjectPathFilter() const {
-    const auto index = tree->currentIndex();
-    QFileInfo selected(index.isValid() ? fileModel->filePath(projectFileFilter->mapToSource(index)) : root);
-    const auto directory = selected.isDir() ? selected.absoluteFilePath() : selected.absolutePath();
-    const auto relative = QDir(root).relativeFilePath(directory);
-    if (relative == QStringLiteral(".") || relative == QStringLiteral("..") || relative.startsWith(QStringLiteral("../")) || QDir::isAbsolutePath(relative))
-        return QStringLiteral("*");
-    return QDir::fromNativeSeparators(relative) + QStringLiteral("/*");
+    const auto relative = selectedProjectRelativeDirectory();
+    return relative.isEmpty() ? QStringLiteral("*") : relative + QStringLiteral("/*");
 }
 void Window::showCrossReferences(const QString &initialSubject) {
     if (root.isEmpty()) {state->setText(ui(QStringLiteral("Apri prima un progetto.")));return;}
     QDialog dialog(this); dialog.setObjectName(QStringLiteral("crossReferenceDialog"));
     dialog.setWindowTitle(ui(QStringLiteral("Riferimenti incrociati"))); dialog.resize(1150,750);
     auto layout=new QVBoxLayout(&dialog);
-    auto rootLabel=new QLabel(root); rootLabel->setTextInteractionFlags(Qt::TextSelectableByMouse); layout->addWidget(rootLabel);
+    auto rootLabel=new QLabel(searchDirectory); rootLabel->setTextInteractionFlags(Qt::TextSelectableByMouse); layout->addWidget(rootLabel);
     auto note=new QLabel(ui(QStringLiteral("Analisi sintattica dell’ultimo indice: i nomi omonimi non sono risolti semanticamente. Macro, overload e chiamate dinamiche possono produrre risultati incompleti. F5 aggiorna l’indice. Linguaggi: C/C++, Java, C#, JavaScript/TypeScript, Python, Rust, PHP."))); note->setWordWrap(true);layout->addWidget(note);
     auto row=new QHBoxLayout; layout->addLayout(row);
     auto subject=new QLineEdit;subject->setObjectName(QStringLiteral("xrefSubject"));subject->setPlaceholderText(ui(QStringLiteral("Nome esatto del simbolo o dipendenza"))); row->addWidget(subject,1);
@@ -78,7 +89,7 @@ void Window::showCrossReferences(const QString &initialSubject) {
     path->setText(selectedProjectPathFilter());
     subject->setText(initialSubject);
     auto query=new QPushButton(ui(QStringLiteral("Cerca riferimenti")));query->setObjectName(QStringLiteral("xrefSearch"));row->addWidget(query);
-    auto status=new QLabel;layout->addWidget(status);
+    auto status=new QLabel;status->setObjectName(QStringLiteral("xrefStatus"));layout->addWidget(status);
     auto list=new QTreeWidget;list->setObjectName(QStringLiteral("xrefResults"));list->setHeaderLabels({ui(QStringLiteral("File")),ui(QStringLiteral("Riga")),ui(QStringLiteral("Origine")),ui(QStringLiteral("Destinazione")),ui(QStringLiteral("Relazione")),ui(QStringLiteral("Stato"))});list->header()->setSectionResizeMode(QHeaderView::ResizeToContents);layout->addWidget(list,1);
     QProcess process; QByteArray output,errors;
     connect(&process,&QProcess::readyReadStandardOutput,&dialog,[&]{output+=process.readAllStandardOutput();if(output.size()>32*1024*1024) process.kill();});
@@ -88,7 +99,7 @@ void Window::showCrossReferences(const QString &initialSubject) {
         if(process.state()!=QProcess::NotRunning)return;
         output.clear();errors.clear();list->clear();query->setEnabled(false);
         status->setText(ui(QStringLiteral("Ricerca riferimenti…")));
-        process.start(engine,{QStringLiteral("xref"),QStringLiteral("--db"),db,QStringLiteral("--subject"),subject->text(),QStringLiteral("--relation"),relation->currentData().toString(),QStringLiteral("--direction"),direction->currentData().toString(),QStringLiteral("--path"),path->text()});timeout.start(15000);
+        process.start(engine,{QStringLiteral("xref"),QStringLiteral("--db"),db,QStringLiteral("--subject"),subject->text(),QStringLiteral("--relation"),relation->currentData().toString(),QStringLiteral("--direction"),direction->currentData().toString(),QStringLiteral("--within"),selectedProjectRelativeDirectory(),QStringLiteral("--path"),path->text()});timeout.start(15000);
     });
     connect(subject,&QLineEdit::returnPressed,query,&QPushButton::click);
     connect(&process,&QProcess::errorOccurred,&dialog,[&](QProcess::ProcessError e){if(e==QProcess::FailedToStart){timeout.stop();query->setEnabled(true);status->setText(process.errorString());}});

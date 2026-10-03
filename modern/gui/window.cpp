@@ -122,12 +122,15 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     split->addWidget(files);
     connect(tree->selectionModel(), &QItemSelectionModel::currentChanged, this,
             [this](const QModelIndex &i) {
+                if (!i.isValid()) return;
                 auto p = fileModel->filePath(projectFileFilter->mapToSource(i));
+                setSearchDirectory(QFileInfo(p).isDir() ? p : QFileInfo(p).absolutePath());
                 if (QFileInfo(p).isFile())
                     showPreview(p);
             });
     connect(tree, &QTreeView::doubleClicked, this, [this](const QModelIndex &i) {
         auto p = fileModel->filePath(projectFileFilter->mapToSource(i));
+        setSearchDirectory(QFileInfo(p).isDir() ? p : QFileInfo(p).absolutePath());
         if (QFileInfo(p).isFile())
             openFile(p);
     });
@@ -170,6 +173,18 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     pathFilter->setPlaceholderText(ui(QStringLiteral("Filtra percorso · es. src/*.rs")));
     pathFilter->setClearButtonEnabled(true);
     sl->addWidget(pathFilter);
+    auto directoryRow = new QHBoxLayout;
+    searchDirectoryLabel = new QLabel(ui(QStringLiteral("Intero progetto")));
+    searchDirectoryLabel->setObjectName(QStringLiteral("searchDirectoryLabel"));
+    searchDirectoryLabel->setWordWrap(true);
+    directoryRow->addWidget(searchDirectoryLabel, 1);
+    auto resetDirectory = new QPushButton(ui(QStringLiteral("Intero progetto")));
+    resetDirectory->setObjectName(QStringLiteral("resetSearchDirectory"));
+    connect(resetDirectory, &QPushButton::clicked, this, [this] {
+        tree->clearSelection(); tree->setCurrentIndex(QModelIndex()); setSearchDirectory(root);
+    });
+    directoryRow->addWidget(resetDirectory);
+    sl->addLayout(directoryRow);
     replaceToggle = new QToolButton;
     replaceToggle->setObjectName(QStringLiteral("replaceToggle"));
     replaceToggle->setText(ui(QStringLiteral("Mostra opzioni di sostituzione")));
@@ -419,7 +434,7 @@ Window::Window(const QString &project, QWidget *parent) : QMainWindow(parent) {
     auto night = settings->addAction(ui(QStringLiteral("Giorno / notte")));
     night->setShortcut(QKeySequence(QStringLiteral("Ctrl+Shift+L")));
     connect(night, &QAction::triggered, this,
-            [this] { setTheme(theme.background.lightness() < 128 ? 0 : 3); });
+            [this] { setTheme(theme.background.lightness() < 128 ? 4 : 3); });
     auto tools = menuBar()->addMenu(ui(QStringLiteral("Strumenti")));
     connect(tools->addAction(ui(QStringLiteral("Ripristina sostituzione…"))), &QAction::triggered, this,
             &Window::recoverReplacement);
@@ -683,6 +698,8 @@ void Window::openProject(const QString &p) {
         queryProcess = nullptr;
     }
     root = QFileInfo(p).canonicalFilePath();
+    searchDirectory = root;
+    searchDirectoryLabel->setText(ui(QStringLiteral("Intero progetto")));
     QSettings().setValue(QStringLiteral("session/lastProject"), root);
     auto id = QString::fromLatin1(
         QCryptographicHash::hash(root.toUtf8(), QCryptographicHash::Sha256).toHex());
@@ -992,6 +1009,7 @@ void Window::search() {
     }
     args << QStringLiteral("--pattern") << (fileSearch && pattern->text().isEmpty() && mode->currentData().toString() == QStringLiteral("glob") ? QStringLiteral("*") : pattern->text())
          << QStringLiteral("--mode") << mode->currentData().toString()
+         << QStringLiteral("--within") << selectedProjectRelativeDirectory()
          << QStringLiteral("--path") << pathFilter->text()
          << QStringLiteral("--limit") << QStringLiteral("5000");
     if (wholeWords->isChecked() && !fileSearch)

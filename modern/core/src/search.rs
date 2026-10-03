@@ -40,11 +40,27 @@ pub struct MatchOptions {
     pub whole_words: bool,
 }
 
+pub struct PathScope<'a> {
+    pub pattern: &'a str,
+    pub directory: &'a str,
+}
+pub fn directory_prefix(directory: &str) -> Result<String> {
+    let normalized = directory.replace('\\', "/");
+    let directory = normalized.trim_end_matches('/');
+    anyhow::ensure!(
+        !directory.starts_with('/')
+            && !directory.contains(':')
+            && !directory.split('/').any(|part| part == ".." || part == "."),
+        "Cartella di ricerca non valida"
+    );
+    Ok(directory.to_string())
+}
+
 pub fn query(
     c: &Connection,
     pattern: &str,
     mode: &str,
-    path: &str,
+    scope: PathScope<'_>,
     kind: &str,
     options: MatchOptions,
     limit: usize,
@@ -58,6 +74,8 @@ pub fn query(
         case_sensitive,
         whole_words,
     )?;
+    let path = scope.pattern;
+    let directory = directory_prefix(scope.directory)?;
     let paths = matcher(if path.is_empty() { "*" } else { path }, "glob", false)?;
     let start = Instant::now();
     c.progress_handler(
@@ -88,7 +106,7 @@ pub fn query(
         " AND ?2=''"
     };
     let sql = format!(
-        "SELECT s.path,s.name,s.scope,s.kind,s.line,s.col,s.detail,f.status FROM symbols s JOIN files f ON s.path=f.path WHERE (?1='' OR s.kind=?1){condition} ORDER BY s.name COLLATE NOCASE,s.path,s.line"
+        "SELECT s.path,s.name,s.scope,s.kind,s.line,s.col,s.detail,f.status FROM symbols s JOIN files f ON s.path=f.path WHERE (?1='' OR s.kind=?1) AND (?3='' OR substr(s.path,1,length(?3)+1)=?3||'/'){condition} ORDER BY s.name COLLATE NOCASE,s.path,s.line"
     );
     let mut statement = c.prepare(&sql)?;
     let fts = if use_index {
@@ -96,7 +114,7 @@ pub fn query(
     } else {
         String::new()
     };
-    let mut rows = statement.query(rusqlite::params![kind, fts])?;
+    let mut rows = statement.query(rusqlite::params![kind, fts, directory])?;
     let mut found = Vec::new();
     let mut scanned = 0;
     let mut truncated = false;
@@ -181,7 +199,7 @@ pub fn source_text(
     c: &Connection,
     pattern: &str,
     mode: &str,
-    path: &str,
+    scope: PathScope<'_>,
     options: MatchOptions,
     limit: usize,
 ) -> Result<Value> {
@@ -191,11 +209,15 @@ pub fn source_text(
     } = options;
     use std::{fs, io::Read, path::PathBuf};
     let matcher = text_matcher(pattern, mode, case_sensitive, whole_words)?;
+    let path = scope.pattern;
+    let directory = directory_prefix(scope.directory)?;
     let paths = crate::search::matcher(if path.is_empty() { "*" } else { path }, "glob", false)?;
     let root: String = c.query_row("SELECT value FROM meta WHERE key='root'", [], |r| r.get(0))?;
     let root = fs::canonicalize(PathBuf::from(root))?;
-    let mut q = c.prepare("SELECT path FROM files ORDER BY path")?;
-    let mut rows = q.query([])?;
+    let mut q = c.prepare(
+        "SELECT path FROM files WHERE (?1='' OR substr(path,1,length(?1)+1)=?1||'/') ORDER BY path",
+    )?;
+    let mut rows = q.query([directory])?;
     let mut found = Vec::new();
     let mut errors = Vec::new();
     let mut skipped = 0;

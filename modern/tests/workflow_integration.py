@@ -58,6 +58,16 @@ class FileSearchTests(unittest.TestCase):
         self.assertEqual(self.call('--pattern', '*.abc')['results'], [])
         self.assertFalse((self.root / 'index.sqlite').exists())
 
+    def test_folder_boundary_and_invalid_directories(self):
+        (self.root / 'src-extra').mkdir()
+        (self.root / 'src-extra/outside.cpp').write_text('// outside')
+        result = self.call('--pattern', '*.cpp', '--within', 'src', '--path', '*')
+        self.assertEqual([r['path'] for r in result['results']], ['src/nested/Widget.CPP'])
+        self.assertEqual(self.call('--within', 'src', '--path', 'src-extra/*')['results'], [])
+        self.call('--within', '../', ok=False)
+        self.call('--within', 'missing', ok=False)
+        self.assertEqual(len(self.call('--pattern', '*.cpp')['results']), 4)
+
     def test_limits_and_invalid_expressions(self):
         result = self.call('--pattern', '*.cpp', '--limit', 1)
         self.assertTrue(result['truncated'])
@@ -95,6 +105,24 @@ class WorkflowTests(unittest.TestCase):
         req.write_text(json.dumps(dict(db=str(self.db),files=list(files),pattern=pattern,replacement=replacement,mode=mode,case_sensitive=sensitive,whole_words=whole_words)),encoding='utf-8')
         result = self.call('replace-plan','--request',req,ok=ok)
         return result[-1] if result else None
+
+    def test_selected_directory_bounds_every_indexed_search(self):
+        for directory in ('src/nested', 'src-extra'):
+            folder = self.root / directory
+            folder.mkdir(parents=True)
+            (folder / 'example.c').write_text('int target() { return 0; }\nint caller() { return target(); }\n', encoding='utf-8')
+        self.index()
+        for command, args in [('grep', ['--pattern', 'target']),
+                              ('query', ['--pattern', 'target']),
+                              ('xref', ['--subject', 'target', '--relation', 'calls'])]:
+            with self.subTest(command=command):
+                rows = self.call(command, '--db', self.db, *args, '--within', 'src', '--path', '*')[0]['results']
+                self.assertTrue(rows)
+                self.assertEqual({row['path'] for row in rows}, {'src/nested/example.c'})
+                self.assertEqual(self.call(command, '--db', self.db, *args, '--within', 'src', '--path', 'src-extra/*')[0]['results'], [])
+                rows = self.call(command, '--db', self.db, *args, '--path', '*')[0]['results']
+                self.assertEqual({row['path'] for row in rows}, {'src/nested/example.c', 'src-extra/example.c'})
+                self.call(command, '--db', self.db, *args, '--within', '../', ok=False)
 
     def test_xrefs_incremental_and_dependencies(self):
         self.a.write_text('fn target() {}\nfn caller() { let value = 1; target(); value += 2; }\n', encoding='utf-8')
